@@ -60,6 +60,6 @@ class RegisteredUserController extends Controller
         $user->save();
 
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect('home');
     }
 }

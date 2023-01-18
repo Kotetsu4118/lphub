@@ -13,6 +13,7 @@ class Tag extends Model
     ];
     
     use HasFactory;
+    public $timestamps = false;
     
     public function question(){
         return $this->belongsToMany(Question::class);

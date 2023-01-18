@@ -47,6 +47,7 @@ class QuestionController extends Controller
     public function store_q(QuestionRequest $request, Question $question){
         $question->user_id = Auth::user()->id;
         $question->fill($request['question']);
+        $question->language_id = $request->language_id;
         $question->save();
         $question->tag()->attach($request['tags']);
         
@@ -54,9 +55,7 @@ class QuestionController extends Controller
     }
     
     public function edit_q(Question $question, Language $languages, Tag $tags){
-
-        
-        
+        // くそコードだから、上手く書き直したい（idを配列形式でcheceked_tag）
         $list = [];
         foreach($question->tag()->select('tags.id')->get() as $i){
             array_push($list, $i['id']);
@@ -73,6 +72,7 @@ class QuestionController extends Controller
     
     public function update_q(QuestionRequest $request, Question $question){
         $question->fill($request['question']);
+        $question->language_id = $request->language_id;
         $question->save();
         
         return redirect('/questions/'.$question->id);

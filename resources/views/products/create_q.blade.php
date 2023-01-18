@@ -42,7 +42,7 @@
             </div>
             
             <div>
-                @component('components/check_tags', ['tags'=>$tags])
+                @component('components/check_tags', ['tags'=>$tags, 'checked_tag'=>NULL])
                 @endcomponent
                 
             </div>

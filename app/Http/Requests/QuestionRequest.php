@@ -27,7 +27,7 @@ class QuestionRequest extends FormRequest
             'question.title' => 'required | string | max:20',
             'question.body' => 'required | string | max:2000',
             'question.answer' => 'required | string | max:2000',
-            'question.language_id' => 'required',
+            'language_id' => 'required',
         ];
     }
     
