@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,8 @@ Route::get('/questions/{question}', [QuestionController::class, 'q_view'])->name
 Route::get('/create_q', [QuestionController::class, 'create_q'])->name('create_q');
 Route::get('/questions/{question}/edit_q', [QuestionController::class, 'edit_q'])->name('edit_q');
 Route::put('/questions/{question}', [QuestionController::class, 'update_q'])->name('update_q');
+Route::get('/create_t', [TagController::class, 'create_t'])->name('create_t');
+Route::post('/create_t', [TagController::class, 'store_t'])->name('store_t');
 
 
 
