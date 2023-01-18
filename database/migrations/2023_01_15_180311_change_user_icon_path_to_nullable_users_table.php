@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('user_icon_path')->nullable()->default(NULL)->change();
+            $table->string('user_icon_path')->nullable(false)->default('https://lphub.s3.ap-northeast-1.amazonaws.com/user_icon/default_user_icon.png')->change();
         });
     }
 

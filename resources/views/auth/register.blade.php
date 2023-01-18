@@ -45,7 +45,7 @@
             <input type="file" id='user_icon' name="user_icon" value="{{ old('user_icon') }}">
             
             <label class="mt-4 block w-44">
-                <img id="preview" class="h-20 w-20" src="https://lphub.s3.ap-northeast-1.amazonaws.com/4py5YNVR1TfYOKl2tnTpxOvDdjar93lr4vb2J01F.png">
+                <img id="preview" class="h-20 w-20" src="https://lphub.s3.ap-northeast-1.amazonaws.com/user_icon/default_user_icon.png">
             </label>
             
             <script src="https://code.jquery.com/jquery-3.6.1.min.js">
