@@ -15,30 +15,47 @@ use App\Http\Requests\QuestionRequest;
 
 class QuestionController extends Controller
 {
-    public function home(Question $question, Language $languages, Tag $tags, User $users){
-        return view('products/home')->with([
+    public function home(Question $question, Language $languages, Tag $tags){
+        return view('questions/home')->with([
             'questions'=>$question->getPaginateByLimit(),
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
-            'users'=>$users->get()
             
         ]);
     }
     
-    public function q_view(Question $question, Tag $tags){
-        return view('products/q_view')->with([
+    public function home_search(Question $questions, Language $languages, Tag $tags, Request $request){
+        $query = Question::query();
+        
+        $search_word = $request->search_word;
+        $spaceConversion = mb_convert_kana($search_word, 's');
+        $wordArraySearched = preg_split('/[\s,]+/', $spaceConversion, -1, PREG_SPLIT_NO_EMPTY);
+        
+        foreach($wordArraySearched as $word){
+            $query->where('title', 'like', '%'.$word.'%')->orwhere('body', 'like', '%'.$word.'%')->orwhere('answer', 'like', '%'.$word.'%');
+        }
+        
+        
+        $searced_questions = $query->paginate(20);
+        
+        return view('questions/home_search')->with([
+            'questions'=>$searced_questions,
+            'languages'=>$languages->get(),
+            'tags'=>$tags->orderby('name')->get(),
+            'search_word'=>$search_word
+        ]);
+        
+    }
+    
+    public function q_view(Question $question){
+        return view('questions/q_view')->with([
             'question'=>$question,
             'tags'=>$question->tag()->get(),
-            // 'user'=>$question->user()->get()
         ]);
     }
     
     public function create_q(Language $languages, Tag $tags){
-        if(Auth::user()==NULL){
-            return view('auth/login');
-        }
-        
-        return view('products/create_q')->with([
+        return view('questions/create_q')->with([
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get()
         ]);
@@ -49,7 +66,7 @@ class QuestionController extends Controller
         $question->fill($request['question']);
         $question->language_id = $request->language_id;
         $question->save();
-        $question->tag()->attach($request['tags']);
+        $question->tag()->sync($request['tags']);
         
         return redirect('/questions/'.$question->id);
     }
@@ -62,7 +79,7 @@ class QuestionController extends Controller
         }
         
         
-        return view('products/edit_q')->with([
+        return view('questions/edit_q')->with([
             'question'=>$question,
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
@@ -71,11 +88,22 @@ class QuestionController extends Controller
     }
     
     public function update_q(QuestionRequest $request, Question $question){
+        
+        // $request->validateWithBag('userDeletion', [
+        //     'password' => ['required', 'current-password'],
+        // ]);
+        
         $question->fill($request['question']);
         $question->language_id = $request->language_id;
+        $question->tag()->sync($request['tags']);
         $question->save();
         
         return redirect('/questions/'.$question->id);
+    }
+    
+    public function delete_q(QuestionRequest $request, Question $question){
+        $question->delete();
+        return redirect('/');
     }
     
 }

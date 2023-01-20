@@ -21,15 +21,25 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::get('/', [QuestionController::class, 'home'])->name('home');
-Route::post('/questions', [QuestionController::class, 'store_q'])->name('sotre_q');
-Route::get('/questions/{question}', [QuestionController::class, 'q_view'])->name('q_view');
-Route::get('/create_q', [QuestionController::class, 'create_q'])->name('create_q');
-Route::get('/questions/{question}/edit_q', [QuestionController::class, 'edit_q'])->name('edit_q');
-Route::put('/questions/{question}', [QuestionController::class, 'update_q'])->name('update_q');
-Route::get('/create_t', [TagController::class, 'create_t'])->name('create_t');
-Route::post('/create_t', [TagController::class, 'store_t'])->name('store_t');
+Route::controller(QuestionController::class)->middleware(['auth'])->group(function(){
+    Route::post('/questions', 'store_q')->name('sotre_q');
+    Route::get('/create_q', 'create_q')->name('create_q');
+    Route::get('/questions/{question}/edit_q', 'edit_q')->name('edit_q');
+    Route::put('/questions/{question}', 'update_q')->name('update_q');
+    Route::delete('/questions/{question}', 'delete_q')->name('delete_q');
+});
 
+
+Route::get('/', [QuestionController::class, 'home'])->name('home');
+Route::get('/home_t/{tag}', [TagController::class, 'home_t'])->name('home_t');
+Route::get('home_search/{search_word}', [QuestionController::class, 'home_search'])->name('home_search');
+Route::get('/questions/{question}', [QuestionController::class, 'q_view'])->name('q_view');
+
+// 認証つけるか迷いどころ
+Route::get('/create_t', [TagController::class, 'create_t'])->name('create_t');
+Route::get('/tags/{tag}/edit_t', [TagController::class, 'edit_t'])->name('edit_t');
+Route::post('/create_t', [TagController::class, 'store_t'])->name('store_t');
+Route::put('/tags/{tag}', [TagController::class, 'update_t'])->name('update_t');
 
 
 Route::get('/dashboard', function () {

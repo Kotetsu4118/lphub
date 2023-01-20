@@ -25,6 +25,10 @@ class Question extends Model
         
     }
     
+    // public function getBySearchword(int $limit_count = 20){
+    //     return $this;
+    // }
+    
     public function user(){
         return $this->belongsTo(User::class);
     }

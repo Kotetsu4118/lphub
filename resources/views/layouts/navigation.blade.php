@@ -12,12 +12,19 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('home')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('home')" >
                         {{ __('Home') }}
                     </x-nav-link>
                 </div>
+                
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('create_q')" >
+                        {{ __('問題作成') }}
+                    </x-nav-link>
+                </div>
+                
             </div>
-
+            
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <img class='h-8 w-auto' src='{{ Auth::user()->user_icon_path }}'>
@@ -62,6 +69,8 @@
                     </svg>
                 </button>
             </div>
+            
+            
         </div>
     </div>
 

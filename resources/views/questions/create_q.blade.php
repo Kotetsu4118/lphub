@@ -6,7 +6,7 @@
             <div class="py-4">
                 @component('components/select_language', ['languages'=>$languages, 'selected'=>NULL])
                 @endcomponent
-                <x-input-error :messages="$errors->first('question.language_id')" class="mt-2" />
+                <x-input-error :messages="$errors->first('language_id')" class="mt-2" />
 
             </div>
             
@@ -41,10 +41,19 @@
                     
             </div>
             
+            <div class='py-2'>
+                タグの設定：   
+            </div>
+            
             <div>
                 @component('components/check_tags', ['tags'=>$tags, 'checked_tag'=>NULL])
                 @endcomponent
-                
+            </div>
+            
+            <div class='py-2'>
+                <a href={{ route('create_t') }}>
+                    タグを作成
+                </a>
             </div>
     
         
