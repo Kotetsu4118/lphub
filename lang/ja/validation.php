@@ -91,7 +91,7 @@ return [
         'array' => ':attribute は :max 文字までです',
         'file' => ':attribute must not be greater than :max kilobytes.',
         'numeric' => ':attribute must not be greater than :max.',
-        'string' => ':attribute は:max 文字までです.',
+        'string' => ':attribute は :max 文字までです.',
     ],
     'max_digits' => 'The :attribute must not have more than :max digits.',
     'mimes' => 'The :attribute must be a file of type: :values.',
@@ -180,6 +180,7 @@ return [
         'question.title' => 'タイトル',
         'question.body' => '問題文',
         'question.answer' => '答え',
+        'tag_name' => 'タグ名',
         ],
 
 ];

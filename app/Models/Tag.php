@@ -22,4 +22,9 @@ class Tag extends Model
     public function language(){
         return $this->belongsTo(Language::class);
     }
+    
+    public function getByTag(int $limit_count=5){
+        return $this->question()->with('tag')->orderBy('updated_at', 'DESC')->paginate($limit_count);
+    }
+        
 }
