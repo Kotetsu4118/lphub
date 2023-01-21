@@ -34,7 +34,7 @@ class ProfileController extends Controller
         $request->user()->fill($request->validated());
         
         $file = $request->file('user_icon');
-        if($file!=NULL){
+        if($file){
             $user_id = (string)$request->user()->id;
             $file_name = $user_id."_icon.png";
             $file->storeAs('/user_icon', $file_name, 's3', 'public-read');

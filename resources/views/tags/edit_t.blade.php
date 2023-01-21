@@ -11,8 +11,8 @@
             
             <div class='py-4'>
                 <x-input-label for="name" :value="__('タグ名')" />
-                <x-text-input id='name' name='tag_name' class="mt-1 block w-full h-8" :value="old('tag_name', $tag->name)" />
-                <x-input-error :messages="$errors->first('tag_name')" class="mt-2" />
+                <x-text-input id='name' name='name' class="mt-1 block w-full h-8" :value="old('name', $tag->name)" />
+                <x-input-error :messages="$errors->first('name')" class="mt-2" />
             </div>
             
             <x-primary-button>{{ __('Save') }}</x-primary-button>

@@ -11,7 +11,14 @@ use App\Http\Requests\TagRequest;
 
 
 class TagController extends Controller
-{
+{   
+    public function index_t(Tag $tags, Language $languages){
+        return view('tags/index_t')->with([
+            'languages'=>$languages->get(),
+            'tags'=>$tags->orderby('name')->get()
+        ]);
+    }
+    
     public function create_t(Language $languages, Tag $tags){
         return view('tags/create_t')->with([
             'languages'=>$languages->get(),
@@ -27,7 +34,7 @@ class TagController extends Controller
     }
     
     public function store_t(TagRequest $request, Tag $tag){
-        $tag->name = $request->tag_name;
+        $tag->name = $request->name;
         $tag->language_id = $request->language_id;
         $tag->save();
         
@@ -35,7 +42,7 @@ class TagController extends Controller
     }
     
     public function update_t(TagRequest $request, Tag $tag){
-        $tag->name = $request->tag_name;
+        $tag->name = $request->name;
         $tag->language_id = $request->language_id;
         $tag->save();
         

@@ -36,6 +36,7 @@ Route::get('home_search/{search_word}', [QuestionController::class, 'home_search
 Route::get('/questions/{question}', [QuestionController::class, 'q_view'])->name('q_view');
 
 // 認証つけるか迷いどころ
+Route::get('/tags', [TagController::class, 'index_t'])->name('index_t');
 Route::get('/create_t', [TagController::class, 'create_t'])->name('create_t');
 Route::get('/tags/{tag}/edit_t', [TagController::class, 'edit_t'])->name('edit_t');
 Route::post('/create_t', [TagController::class, 'store_t'])->name('store_t');

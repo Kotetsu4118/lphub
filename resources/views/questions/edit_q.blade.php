@@ -13,7 +13,6 @@
             </div>
             
             
-            
             <div class='py-4'>
                 
                 <x-input-label for="title" :value="__('タイトル')" />
