@@ -14,6 +14,7 @@ use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\DB;
 
 class RegisteredUserController extends Controller
 {
@@ -38,28 +39,30 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
         
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        DB::transaction(function () use (&$request){
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+            
+            event(new Registered($user));
+    
+            Auth::login($user);
+            
+            // ユーザアイコンをs3へ保存
+            // ユーザアイコンのパスを取得
+            $new_user = Auth::user();
+            $user_id = (string)$new_user->id;
+            $file = $request->file('user_icon');
+            $file_name = $user_id."_icon.png";
+            $file->storeAs('/user_icon', $file_name, 's3', 'public-read');
+            $url = Storage::disk('s3')->url('/user_icon/'.$file_name);
+            $new_user->user_icon_path = $url;
+            $user->save();
+
+        });
         
-        event(new Registered($user));
-
-        Auth::login($user);
-        
-        // ユーザアイコンをs3へ保存
-        // ユーザアイコンのパスを取得
-        $new_user = Auth::user();
-        $user_id = (string)$new_user->id;
-        $file = $request->file('user_icon');
-        $file_name = $user_id."_icon.png";
-        $file->storeAs('/user_icon', $file_name, 's3', 'public-read');
-        $url = Storage::disk('s3')->url('/user_icon/'.$file_name);
-        $new_user->user_icon_path = $url;
-        $user->save();
-
-
         return redirect('home');
     }
 }

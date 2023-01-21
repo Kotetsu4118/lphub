@@ -3,7 +3,8 @@
   <label for="select_language"></label>
   <select class="form-control" id="select_language" name='language_id'>
       
-      
+      <!-- 15行目でやってるからいらない　-->
+      <!--横幅を広げて、項目を真ん中に持ってくる　-->
       @if($selected !=NULL && old('language_id') == NULL)
         <option hidden selected value='{{ $selected->id }}'>{{ $selected->name }}</option>
       @else

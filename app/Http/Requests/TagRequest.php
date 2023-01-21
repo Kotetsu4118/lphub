@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TagRequest extends FormRequest
 {
@@ -24,8 +25,9 @@ class TagRequest extends FormRequest
     public function rules()
     {
         return [
-            'tag_name' => 'required | max:20',
-            'language_id' => 'required'
+            'language_id' => 'required',
+            'name' => ['required', 'max:20', Rule::unique('tags')->where('language_id', $this->language_id)] 
+            
         ];
     }
     
