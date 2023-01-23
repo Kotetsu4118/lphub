@@ -24,6 +24,6 @@
         
     </div>
     
-    @include('layouts.home')
+    @include('layouts.home_layout')
 
 </x-app-layout>

@@ -18,7 +18,7 @@
         </div>
     </div>   
     
-    @include('layouts.home')
+    @include('layouts.home_layout')
         
     
         

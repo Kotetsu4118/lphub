@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,6 +42,11 @@ Route::get('/create_t', [TagController::class, 'create_t'])->name('create_t');
 Route::get('/tags/{tag}/edit_t', [TagController::class, 'edit_t'])->name('edit_t');
 Route::post('/create_t', [TagController::class, 'store_t'])->name('store_t');
 Route::put('/tags/{tag}', [TagController::class, 'update_t'])->name('update_t');
+Route::post('/questions/{question}/comment', [CommentController::class, 'store_c'])->name('store_c');
+
+Route::get('/comment/{comment}/edit', [CommentController::class, 'edit_c'])->name('edit_c');
+Route::put('/comment/{comment}/update', [CommentController::class, 'update_c'])->name('update_c');
+Route::delete('/comment/{comment}/delete', [CommentController::class, 'delete_c'])->name('delete_c');
 
 
 Route::get('/dashboard', function () {

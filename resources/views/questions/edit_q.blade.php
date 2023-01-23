@@ -67,12 +67,12 @@
     <!-- 削除ボタン -->
     
     <div class='pl-3 py4'>
-        <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-question-deletion')"
-    >{{ __('削除') }}</x-danger-button>
-
-        <x-modal name="confirm-question-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
+        
+        <x-danger-button x-data=""
+        x-on:click.prevent="$dispatch('open-modal', 'confirm-question-deletion')">
+            {{ __('削除') }}</x-danger-button>
+        <x-modal name="confirm-question-deletion" :show="$errors->isNotEmpty()" focusable>
+            
             <form method="post" action="/questions/{{ $question->id }}" class="p-6">
                 @csrf
                 @method('delete')
@@ -86,17 +86,18 @@
                 </p>
     
                 <div class="mt-6">
-                    <x-input-label for="comfirm" class="sr-only" />
+                    <x-input-label for="confirm" class="sr-only" />
     
                     <x-text-input
-                        id="comfirm"
-                        name="comfirm"
+                        id="confirm"
+                        name="confirm"
                         type="text"
                         class="mt-1 block w-3/4"
                         placeholder="確認"
+                        :value="old('confirm')"
                     />
-    
-                    <x-input-error :messages="$errors->get('comfirm')" class="mt-2" />
+                    
+                    <x-input-error :messages="$errors->get('confirm')" class="mt-2" />
                 </div>
     
                 <div class="mt-6 flex justify-end">
