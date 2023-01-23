@@ -14,7 +14,7 @@
                 <x-input-error :messages="$errors->first('name')" class="mt-2" />
             </div>
             
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+            <x-primary-button>{{ __('作成') }}</x-primary-button>
         </div>
     </form>
     

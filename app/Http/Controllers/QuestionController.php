@@ -9,6 +9,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\QuestionRequest;
+use App\Http\Requests\DeleteRequest;
 
 // リクエスト後で作ってuse
 // 連携するmodelを後で作ってuse
@@ -51,6 +52,7 @@ class QuestionController extends Controller
         return view('questions/q_view')->with([
             'question'=>$question,
             'tags'=>$question->tag()->get(),
+            'comments'=>$question->comment()->orderby('created_at')->get(),
         ]);
     }
     
@@ -101,7 +103,7 @@ class QuestionController extends Controller
         return redirect('/questions/'.$question->id);
     }
     
-    public function delete_q(QuestionRequest $request, Question $question){
+    public function delete_q(DeleteRequest $request, Question $question){
         $question->delete();
         return redirect('/');
     }
