@@ -7,8 +7,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use DateTime;
 use App\Models\Question;
+use App\Models\Comment;
 
-class QuestionSeeder extends Seeder
+class CommentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,6 +18,6 @@ class QuestionSeeder extends Seeder
      */
     public function run()
     {
-         Question::factory()->count(25)->create();
+        Comment::factory()->count(50)->create();
     }
 }

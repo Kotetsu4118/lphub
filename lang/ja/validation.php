@@ -181,7 +181,8 @@ return [
         'question.body' => '問題文',
         'question.answer' => '答え',
         'name' => 'そのタグ',
-        'comment' => 'コメント'
+        'comment' => 'コメント',
+        'profile' => 'プロフィール',
         ],
 
 ];

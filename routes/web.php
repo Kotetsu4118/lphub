@@ -28,6 +28,7 @@ Route::controller(QuestionController::class)->middleware(['auth'])->group(functi
     Route::get('/questions/{question}/edit_q', 'edit_q')->name('edit_q');
     Route::put('/questions/{question}', 'update_q')->name('update_q');
     Route::delete('/questions/{question}', 'delete_q')->name('delete_q');
+    Route::put('/questions/{question}/flags', 'update_flags')->name('update_flags');
 });
 
 
@@ -47,6 +48,15 @@ Route::post('/questions/{question}/comment', [CommentController::class, 'store_c
 Route::get('/comment/{comment}/edit', [CommentController::class, 'edit_c'])->name('edit_c');
 Route::put('/comment/{comment}/update', [CommentController::class, 'update_c'])->name('update_c');
 Route::delete('/comment/{comment}/delete', [CommentController::class, 'delete_c'])->name('delete_c');
+
+Route::get('/mypage', [QuestionController::class, 'mypage'])->name('mypage');
+Route::get('/mypage/completes', [QuestionController::class, 'my_completes'])->name('my_completes');
+Route::get('/mypage/laters', [QuestionController::class, 'my_laters'])->name('my_laters');
+Route::get('/mypage/creates', [QuestionController::class, 'my_creates'])->name('my_creates');
+Route::get('/mypage/comments', [QuestionController::class, 'my_comments'])->name('my_comments');
+Route::put('/mypage/delete_complete_flags', [QuestionController::class, 'delete_complete_flags'])->name('delete_complete_flags');
+Route::put('/mypage/delete_later_flags', [QuestionController::class, 'delete_later_flags'])->name('delete_later_flags');
+Route::delete('/mypage/delete_creates', [QuestionController::class, 'delete_creates'])->name('delete_creates');
 
 
 Route::get('/dashboard', function () {
