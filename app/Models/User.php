@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
+    use SoftDeletes;
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -21,7 +24,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_icon_path'
+        'user_icon_path',
+        'profile',
     ];
 
     /**
@@ -43,12 +47,40 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
     
+    
+    // リレーション
     public function question(){
         return $this->hasMany(Question::class);
     }
     
+    public function complete_flag(){
+        return $this->belongsToMany(Question::class, 'complete_flag');
+    }
+    
+    public function later_flag(){
+        return $this->belongsToMany(Question::class, 'later_flag');
+    }
+    
+    
     public function comment(){
         return $this->hasMany(Comment::class);
+    }
+    
+    // 関連削除
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            DB::transaction(function () use (&$user) {
+                $user->complete_flag()->detach();
+                $user->later_flag()->detach();
+                $user->comment()->delete();
+                $user->question()->each(function ($question){
+                    $question->delete();
+                });
+            });
+        });
     }
     
 }

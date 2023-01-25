@@ -6,6 +6,30 @@
                     {{ $question->title }}
                 </h2>
                 
+                @auth
+                <form action='/questions/{{ $question->id }}/flags' method='POST'>
+                    @csrf
+                    @method('PUT')
+                    <div class='flex'>
+                        <div>
+                            @component('components/complete_flag', ['complete_flag'=>$complete_flag])@endcomponent
+                        </div>
+                        
+                        <div class='pl-3'>
+                            @component('components/later_flag', ['later_flag'=>$later_flag])@endcomponent
+                        </div>
+ 
+                    
+                        <div class="pl-3">
+                            <x-primary-button>{{ __('フラグを更新') }}</x-primary-button>
+                        </div>
+                        
+                    </div>
+                </form>
+                @endauth
+                
+                
+                
                 <div class="p-4">
                     問題：
                     <br>
@@ -36,7 +60,7 @@
                 
                 @include('layouts.tag_layout')
                 
-                @if(Auth::user()!=NULL && Auth::user()->id==$question->user->id)
+                @if(Auth::user() && Auth::user()->id==$question->user->id)
                 <div class="pt-2">
                     <a href="/questions/{{ $question->id }}/edit_q">
                         <x-primary-button class="">
@@ -52,11 +76,11 @@
     <!--ここからはコメント系-->
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pt-2">
         <hr>
-        <!--<h2 class="font-semibold text-xl text-gray-800 leading-tight">-->
+
         <div class='font-semibold text-xl text-gray-800 leading-tight py-4'>
             コメント
         </div>
-        <!--</h2>-->
+    
         
         @foreach($comments as $comment)
             <div class='pt-2'>
@@ -80,6 +104,7 @@
                             {{ $comment->body }}
                         </div>
                         
+                        @auth
                         @if($comment->user->id == Auth::user()->id)
                             <div>
                                 <a href='/comment/{{ $comment->id }}/edit'>
@@ -91,6 +116,7 @@
                                 </a>
                             </div>
                         @endif
+                        @endauth
                     </div>
                 </div>
             </div>

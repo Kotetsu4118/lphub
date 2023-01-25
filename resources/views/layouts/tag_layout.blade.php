@@ -1,4 +1,4 @@
-<div class='flex'>
+<div class='flex-auto'>
     タグ：
     @foreach($question->tag as $tag)
         <a href='/home_t/{{ $tag->id }}' class='pr-4'>

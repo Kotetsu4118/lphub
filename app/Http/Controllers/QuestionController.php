@@ -49,10 +49,22 @@ class QuestionController extends Controller
     }
     
     public function q_view(Question $question){
+        if(Auth::user()){
+            $complete_flag = $question->complete_flag()->where('users.id', Auth::user()->id)->exists();
+            $later_flag = $question->later_flag()->where('users.id', Auth::user()->id)->exists();
+        }
+        else{
+            $complete_flag = false;
+            $later_flag = false;
+            
+        }
+        
         return view('questions/q_view')->with([
             'question'=>$question,
             'tags'=>$question->tag()->get(),
             'comments'=>$question->comment()->orderby('created_at')->get(),
+            'complete_flag' => $complete_flag,
+            'later_flag' => $later_flag,
         ]);
     }
     
@@ -106,6 +118,110 @@ class QuestionController extends Controller
     public function delete_q(DeleteRequest $request, Question $question){
         $question->delete();
         return redirect('/');
+    }
+    
+    
+    // ここからはマイページ系
+    public function update_flags(Request $request, Question $question){
+        $question->complete_flag()->sync($request->complete_flag);
+        $question->later_flag()->sync($request->later_flag);
+        
+        return redirect('/questions/'.$question->id);
+    }
+    
+    public function mypage(){
+        $user = Auth::user();
+        $completes = $user->complete_flag()->count();
+        $laters = $user->later_flag()->count();
+        $creates = $user->question()->count();
+        $comments = $user->comment()->count();
+        
+        return view('mypage/mypage')->with([
+            'completes' => $completes,
+            'laters' => $laters,
+            'creates' => $creates,
+            'comments' => $comments,
+        ]);
+    }
+    
+    // 完了した問題
+    public function my_completes(){
+        $user = Auth::user();
+        $questions = $user->complete_flag()->get();
+        
+        return view('mypage/completes')->with([
+            'questions'=>$questions,
+            'flag_type'=>'complete',
+        ]);
+    }
+    
+    
+    public function delete_complete_flags(Request $request){
+        $user = Auth::user();
+        $user->complete_flag()->detach($request['complete_flags']);
+        
+        return redirect(route('my_completes'));
+    }
+    
+    // 後で解く問題
+    public function my_laters(){
+        $user = Auth::user();
+        $questions = $user->later_flag()->get();
+        
+        return view('mypage/laters')->with([
+            'questions'=>$questions,
+            'flag_type'=>'later',
+        ]);
+    }
+    
+    
+    public function delete_later_flags(Request $request){
+        $user = Auth::user();
+        $user->later_flag()->detach($request['later_flags']);
+        
+        return redirect(route('my_laters'));
+    }
+    
+    // 作成した問題
+    public function my_creates(){
+        $user = Auth::user();
+        $questions = $user->question()->get();
+        
+        return view('mypage/creates')->with([
+            'questions'=>$questions,
+            'flag_type'=>'delete',
+        ]);
+    }
+    
+    public function delete_creates(Request $request, Question $question){
+        foreach($request['questions'] as $question_id){
+            $question->where('id', $question_id)->delete();
+        }
+        
+        return redirect(route('my_creates'));
+    }
+    
+    public function my_comments(Question $question){
+        $user = Auth::user();
+        $question_ids = [];
+        $comments = $user->comment()->orderby('question_id')->get();
+        $comments_group = $comments->groupby('question_id')->toArray();
+        
+        $questions = [];
+        foreach($comments_group as $group){
+            array_push($questions, $question->where('id', $group[0]['question_id'])->get()->toArray()  );
+        }
+        
+        
+        // foreach( array_map(NULL, $questions, $comments_group) as [$question, $group] ){
+        //     dd($a = $question);
+        // }
+        
+        
+        return view('mypage/comments')->with([
+            'comments_group'=>$comments_group,
+            'questions'=>$questions,
+        ]);
     }
     
 }

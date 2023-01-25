@@ -16,13 +16,15 @@
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('patch')
-
+        
+        <!--名前-->
         <div>
             <x-input-label for="name" :value="__('名前')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
-
+        
+        <!--メールアドレス-->
         <div>
             <x-input-label for="email" :value="__('メールアドレス')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="email" />
@@ -47,9 +49,17 @@
             @endif
         </div>
         
+        <!--プロフィール-->
+        <div>
+            <x-input-label for="profile" :value="__('プロフィール')" />
+            <x-text-input id="profile" name="profile" type="text" class="mt-1 block w-full h-20" :value="old('profile', $user->profile)" autofocus autocomplete="profile" />
+            <x-input-error class="mt-2" :messages="$errors->get('profile')" />
+        </div>
+        
+        <!--アイコン-->
         <div>
             <x-input-label for="user_icon" :value="__('Icon')" />
-            {{-- jsで現在選択している画像にリアルタイムで変更 --}}
+            {{-- jsで現在選択している画像にリアルタイムで変更したい --}}
             <img src="{{ $user->user_icon_path }}">
             <input class='pt-2' type="file" id='user_icon' name="user_icon">
             

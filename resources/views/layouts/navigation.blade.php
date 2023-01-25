@@ -91,8 +91,14 @@
     
                         <x-slot name="content">
                             <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
+                                {{ __('プロフィール') }}
                             </x-dropdown-link>
+                            
+                            
+                            <x-dropdown-link :href="route('mypage')" >
+                                {{ __('マイページ') }}
+                            </x-dropdown-link>
+                            
     
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">
@@ -101,7 +107,7 @@
                                 <x-dropdown-link :href="route('logout')"
                                         onclick="event.preventDefault();
                                                     this.closest('form').submit();">
-                                    {{ __('Log Out') }}
+                                    {{ __('ログアウト') }}
                                 </x-dropdown-link>
                             </form>
                         </x-slot>
