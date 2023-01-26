@@ -13,9 +13,6 @@
                                 </a>
                             </div>
                             <div class='max-w-6xl mx-auto sm:px-6 lg:px-8'>
-                                {{--
-                                <a href="/questions/{{ $question->id }}" >
-                                --}}
                                     <div class=" bg-white overflow-hidden shadow-sm sm:rounded-lg">
                                         <div class="p-2">
                                             <div class="flex justify-between">
@@ -40,7 +37,6 @@
                                         </div>
                                     </div>
                                 
-                                <!--</a>-->
                             </div>
                         </div>
                     @endforeach

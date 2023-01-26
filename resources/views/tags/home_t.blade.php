@@ -17,6 +17,11 @@
             検索結果：{{ $tag_name }}
         </div>
     </div>   
+    @if($questions[0]==NULL)
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div align='center'>このタグが付いた問題はありません</div>
+        </div>
+    @endif
     
     @include('layouts.home_layout')
         

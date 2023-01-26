@@ -19,6 +19,16 @@
                                 {{ $question->body }}
                             </div>
                             
+                            @if($question->dummy_level_avg_level)
+                                <div>
+                                    難易度：{{ round($question->dummy_level_avg_level, 2) }}
+                                </div>
+                            @else
+                                <div>
+                                    難易度：未評価    
+                                </div>
+                            @endif
+                            
                             <div class='flex space-x-8'>
                                 <div>
                                     作成者：{{ $question->user->name }}
@@ -35,4 +45,6 @@
 
 </div>
 
+{{--
 <div class="paginete">{{ $questions->links()}}</div>
+--}}

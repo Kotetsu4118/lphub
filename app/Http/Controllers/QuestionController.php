@@ -7,6 +7,7 @@ use App\Models\Question;
 use App\Models\Language;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Question_level;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\QuestionRequest;
 use App\Http\Requests\DeleteRequest;
@@ -16,12 +17,14 @@ use App\Http\Requests\DeleteRequest;
 
 class QuestionController extends Controller
 {
-    public function home(Question $question, Language $languages, Tag $tags){
+    public function home(Question $question, Language $languages, Tag $tags, Question_level $question_levels){
+        
+        $questions = $question->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
+        
         return view('questions/home')->with([
-            'questions'=>$question->getPaginateByLimit(),
+            'questions'=>$questions,
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
-            
         ]);
     }
     
@@ -37,7 +40,7 @@ class QuestionController extends Controller
         }
         
         
-        $searced_questions = $query->paginate(20);
+        $searced_questions = $query->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
         
         return view('questions/home_search')->with([
             'questions'=>$searced_questions,
@@ -49,9 +52,17 @@ class QuestionController extends Controller
     }
     
     public function q_view(Question $question){
+        // 難易度系の初期化
+        $selected_level=0;
+        $level = false;
+        
         if(Auth::user()){
-            $complete_flag = $question->complete_flag()->where('users.id', Auth::user()->id)->exists();
-            $later_flag = $question->later_flag()->where('users.id', Auth::user()->id)->exists();
+            // フラグ系
+            $user_id = Auth::user()->id;
+            $complete_flag = $question->complete_flag()->where('users.id', $user_id)->exists();
+            $later_flag = $question->later_flag()->where('users.id', $user_id)->exists();
+            // 難易度
+            $level = $question->level()->where('user_id', $user_id)->pluck('level');
         }
         else{
             $complete_flag = false;
@@ -59,12 +70,21 @@ class QuestionController extends Controller
             
         }
         
+        
+        // 難易度が設定されていれば更新
+        if($level && count($level)!=0){
+            $selected_level=$level[0];
+        }
+        
+        $question_with_level = $question->withAvg('dummy_level', 'level')->where('id', $question->id)->get();
+        
         return view('questions/q_view')->with([
-            'question'=>$question,
+            'question'=>$question_with_level[0],
             'tags'=>$question->tag()->get(),
             'comments'=>$question->comment()->orderby('created_at')->get(),
             'complete_flag' => $complete_flag,
             'later_flag' => $later_flag,
+            'selected_level' => $selected_level,
         ]);
     }
     
@@ -121,7 +141,7 @@ class QuestionController extends Controller
     }
     
     
-    // ここからはマイページ系
+    // フラグ管理
     public function update_flags(Request $request, Question $question){
         $question->complete_flag()->sync($request->complete_flag);
         $question->later_flag()->sync($request->later_flag);
@@ -129,6 +149,7 @@ class QuestionController extends Controller
         return redirect('/questions/'.$question->id);
     }
     
+    // マイページ系
     public function mypage(){
         $user = Auth::user();
         $completes = $user->complete_flag()->count();
@@ -147,7 +168,7 @@ class QuestionController extends Controller
     // 完了した問題
     public function my_completes(){
         $user = Auth::user();
-        $questions = $user->complete_flag()->get();
+        $questions = $user->complete_flag()->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
         
         return view('mypage/completes')->with([
             'questions'=>$questions,
@@ -166,7 +187,7 @@ class QuestionController extends Controller
     // 後で解く問題
     public function my_laters(){
         $user = Auth::user();
-        $questions = $user->later_flag()->get();
+        $questions = $user->later_flag()->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
         
         return view('mypage/laters')->with([
             'questions'=>$questions,
@@ -185,7 +206,7 @@ class QuestionController extends Controller
     // 作成した問題
     public function my_creates(){
         $user = Auth::user();
-        $questions = $user->question()->get();
+        $questions = $user->question()->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
         
         return view('mypage/creates')->with([
             'questions'=>$questions,
@@ -212,16 +233,19 @@ class QuestionController extends Controller
             array_push($questions, $question->where('id', $group[0]['question_id'])->get()->toArray()  );
         }
         
-        
-        // foreach( array_map(NULL, $questions, $comments_group) as [$question, $group] ){
-        //     dd($a = $question);
-        // }
-        
-        
         return view('mypage/comments')->with([
             'comments_group'=>$comments_group,
             'questions'=>$questions,
         ]);
+    }
+    
+    
+    // 難易度管理
+    public function update_level(Question $question, Request $request){
+        $id = Auth::user()->id;
+        $question->level()->syncWithPivotValues([$id], ['level' => $request->level], false);
+        
+        return redirect('/questions/'.$question->id);
     }
     
 }

@@ -29,6 +29,17 @@ Route::controller(QuestionController::class)->middleware(['auth'])->group(functi
     Route::put('/questions/{question}', 'update_q')->name('update_q');
     Route::delete('/questions/{question}', 'delete_q')->name('delete_q');
     Route::put('/questions/{question}/flags', 'update_flags')->name('update_flags');
+    Route::put('/questions/{question}/level', 'update_level')->name('update_level');
+    
+    // マイページ系
+    Route::get('/mypage', 'mypage')->name('mypage');
+    Route::get('/mypage/completes', 'my_completes')->name('my_completes');
+    Route::get('/mypage/laters', 'my_laters')->name('my_laters');
+    Route::get('/mypage/creates', 'my_creates')->name('my_creates');
+    Route::get('/mypage/comments', 'my_comments')->name('my_comments');
+    Route::put('/mypage/delete_complete_flags', 'delete_complete_flags')->name('delete_complete_flags');
+    Route::put('/mypage/delete_later_flags', 'delete_later_flags')->name('delete_later_flags');
+    Route::delete('/mypage/delete_creates', 'delete_creates')->name('delete_creates');
 });
 
 
@@ -38,25 +49,28 @@ Route::get('home_search/{search_word}', [QuestionController::class, 'home_search
 Route::get('/questions/{question}', [QuestionController::class, 'q_view'])->name('q_view');
 
 // 認証つけるか迷いどころ
+// タグ系
 Route::get('/tags', [TagController::class, 'index_t'])->name('index_t');
-Route::get('/create_t', [TagController::class, 'create_t'])->name('create_t');
-Route::get('/tags/{tag}/edit_t', [TagController::class, 'edit_t'])->name('edit_t');
-Route::post('/create_t', [TagController::class, 'store_t'])->name('store_t');
-Route::put('/tags/{tag}', [TagController::class, 'update_t'])->name('update_t');
-Route::post('/questions/{question}/comment', [CommentController::class, 'store_c'])->name('store_c');
 
-Route::get('/comment/{comment}/edit', [CommentController::class, 'edit_c'])->name('edit_c');
-Route::put('/comment/{comment}/update', [CommentController::class, 'update_c'])->name('update_c');
-Route::delete('/comment/{comment}/delete', [CommentController::class, 'delete_c'])->name('delete_c');
+Route::controller(TagController::class)->middleware(['auth'])->group(function(){
+    Route::get('/create_t', 'create_t')->name('create_t');
+    Route::get('/tags/{tag}/edit_t', 'edit_t')->name('edit_t');
+    Route::post('/create_t', 'store_t')->name('store_t');
+    Route::put('/tags/{tag}', 'update_t')->name('update_t');
+});
 
-Route::get('/mypage', [QuestionController::class, 'mypage'])->name('mypage');
-Route::get('/mypage/completes', [QuestionController::class, 'my_completes'])->name('my_completes');
-Route::get('/mypage/laters', [QuestionController::class, 'my_laters'])->name('my_laters');
-Route::get('/mypage/creates', [QuestionController::class, 'my_creates'])->name('my_creates');
-Route::get('/mypage/comments', [QuestionController::class, 'my_comments'])->name('my_comments');
-Route::put('/mypage/delete_complete_flags', [QuestionController::class, 'delete_complete_flags'])->name('delete_complete_flags');
-Route::put('/mypage/delete_later_flags', [QuestionController::class, 'delete_later_flags'])->name('delete_later_flags');
-Route::delete('/mypage/delete_creates', [QuestionController::class, 'delete_creates'])->name('delete_creates');
+
+
+// コメント系
+Route::controller(CommentController::class)->middleware(['auth'])->group(function(){
+    Route::post('/questions/{question}/comment', [CommentController::class, 'store_c'])->name('store_c');
+    Route::get('/comment/{comment}/edit', [CommentController::class, 'edit_c'])->name('edit_c');
+    Route::put('/comment/{comment}/update', [CommentController::class, 'update_c'])->name('update_c');
+    Route::delete('/comment/{comment}/delete', [CommentController::class, 'delete_c'])->name('delete_c');
+});
+
+
+
 
 
 Route::get('/dashboard', function () {
