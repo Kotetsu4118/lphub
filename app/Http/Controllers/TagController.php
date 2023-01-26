@@ -50,8 +50,9 @@ class TagController extends Controller
     }
     
     public function home_t(Tag $tag){
+        $questions = $tag->question()->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
         return view('tags/home_t')->with([
-            'questions'=>$tag->getByTag(),
+            'questions'=>$questions,
             'tag_name'=>$tag->name,
             'tags'=>$tag->orderby('name')->get(),
             

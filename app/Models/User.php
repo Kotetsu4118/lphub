@@ -66,6 +66,10 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
     
+    public function level(){
+        return $this->belongsToMany(Question::class, 'question_level');
+    }
+    
     // 関連削除
     public static function boot()
     {

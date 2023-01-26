@@ -12,12 +12,12 @@
     
     
     
-    <div class="pt-2">
-        <div class='flex pl-3'>
+    <div class="pt-2 flex">
+        <div class='pl-3'>
                 {{ $search_word }} の検索結果
         </div>
         
-        <div>
+        <div class='px-6'>
             <form action='/home_search/{search_word}' method='GET'>
                 <div class='flex'>
                     <x-text-input id='search_word' name='search_word' class="mt-1 block w-full h-8" :value="old('search_word')"/>
@@ -28,10 +28,11 @@
                 </div>
             </form>
         </div>
+    </div>
         
         @if(!$questions[0])
-            <div class=''>
-                一致する問題がありませんでした。
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div align='center'>一致する問題がありませんでした。</div>
             </div>
         @endif
         

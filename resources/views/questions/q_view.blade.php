@@ -2,11 +2,18 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class='p-4'>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    {{ $question->title }}
-                </h2>
+                <div>
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                        {{ $question->title }}
+                    </h2>
+                </div>
+                
+                <div>
+                    難易度（全ユーザ平均）：{{ round($question->dummy_level_avg_level, 2) }}
+                </div>
                 
                 @auth
+                <!--フラグ管理-->
                 <form action='/questions/{{ $question->id }}/flags' method='POST'>
                     @csrf
                     @method('PUT')
@@ -26,10 +33,37 @@
                         
                     </div>
                 </form>
+                
+                <!--難易度の評価-->
+                <form action='/questions/{{ $question->id }}/level' method='POST'>
+                    @csrf
+                    @method('PUT')
+                    <div class='flex py-2'>
+                        <div class="form-group">
+                            <label for="select_level"></label>
+                            <select class="form-control w-72" id="select_level" name='level'>
+                              
+                                <!-- 15行目でやってるからいらない　-->
+                                <!--横幅を広げて、項目を真ん中に持ってくる　-->
+                                @if($selected_level==0 || $selected_level==NULL)
+                                    <option hidden>この問題の難易度を評価する</option>
+                                @endif
+                                  
+                                @for($level=1; $level<=10; $level++)
+                                    <option class='items-center' value='{{ $level }}' @if($level == $selected_level) selected='selected' @endif>{{ $level }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        
+                        <div class='py-2 pl-3'>
+                            <x-primary-button>{{ __('難易度を更新') }}</x-primary-button>
+                        </div>
+                    </div>
+                </form>
                 @endauth
                 
                 
-                
+                <!--問題内容-->
                 <div class="p-4">
                     問題：
                     <br>
@@ -58,8 +92,10 @@
                     </div>
                 </div>
                 
+                <!--タグの表示-->
                 @include('layouts.tag_layout')
                 
+                <!--編集の導線-->
                 @if(Auth::user() && Auth::user()->id==$question->user->id)
                 <div class="pt-2">
                     <a href="/questions/{{ $question->id }}/edit_q">
@@ -81,7 +117,8 @@
             コメント
         </div>
     
-        
+        <!--コメントの表示-->
+            <!--後でペジネイトしたい-->
         @foreach($comments as $comment)
             <div class='pt-2'>
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -104,6 +141,7 @@
                             {{ $comment->body }}
                         </div>
                         
+                        <!--コメントの編集の導線-->
                         @auth
                         @if($comment->user->id == Auth::user()->id)
                             <div>
@@ -122,6 +160,7 @@
             </div>
         @endforeach
         
+        <!--コメントの投稿-->
         @auth
             <div class='py-4'>
                 <form action='/questions/{{ $question->id }}/comment' method='POST'>

@@ -54,9 +54,16 @@ class Question extends Model
         return $this->hasMany(Comment::class);
     }
     
+    public function level(){
+        return $this->belongsToMany(User::class, 'question_levels');
+    }
+    
+    public function dummy_level(){
+        return $this->hasMany(Question_level::class);
+    }
+
+    
     // 関連削除
-    
-    
     public static function boot()
     {
         
@@ -69,6 +76,7 @@ class Question extends Model
             $question->later_flag()->detach();
             $question->comment()->delete();
             $question->tag()->detach();
+            $question->level()->detach();
             });
         });
     }

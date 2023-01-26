@@ -22,7 +22,7 @@
                         @endif
                     </div>
                     <a href="/questions/{{ $question->id }}" >
-                        <div class=" bg-white overflow-hidden shadow-sm sm:rounded-lg flex-auto">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg flex-auto">
                             <div class="p-2">
                                 <div class="flex justify-between">
                                     <div class="text-xl text-gray-900">
@@ -37,6 +37,16 @@
                                 <div class="py-4 pl-3 text-gray-900">
                                     {{ $question->body }}
                                 </div>
+                                
+                                @if($question->dummy_level_avg_level)
+                                    <div>
+                                        難易度：{{ round($question->dummy_level_avg_level, 2) }}
+                                    </div>
+                                @else
+                                    <div>
+                                        難易度：未評価    
+                                    </div>
+                                @endif
                                 
                                 <div class='flex space-x-8'>
                                     <div>
