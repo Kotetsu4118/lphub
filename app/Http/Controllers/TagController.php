@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\Language;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\TagRequest;
+use Illuminate\Support\Facades\Auth;
 
 
 class TagController extends Controller
@@ -50,7 +51,21 @@ class TagController extends Controller
     }
     
     public function home_t(Tag $tag){
-        $questions = $tag->question()->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
+        
+        $questions = $tag->question()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany');
+        
+        if(Auth::user()){
+            $questions = $questions->withExists(['g4q_hasmany'=> function ($q){
+                $q->where('user_id', Auth::user()->id);
+            }]);
+        }
+        
+        $questions = $questions->orderBy('updated_at', 'DESC')->paginate(20);
+        
+        
+        // $questions = $tag->question()->withAvg('level_hasmany', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
+        
+        
         return view('tags/home_t')->with([
             'questions'=>$questions,
             'tag_name'=>$tag->name,

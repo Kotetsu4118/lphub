@@ -54,13 +54,29 @@ class Question extends Model
         return $this->hasMany(Comment::class);
     }
     
-    public function level(){
+    public function level_belongs2many(){
         return $this->belongsToMany(User::class, 'question_levels');
     }
     
-    public function dummy_level(){
+    public function level_hasmany(){
         return $this->hasMany(Question_level::class);
     }
+    
+    public function g4q_belongs2many(){
+        return $this->belongsToMany(User::class, 'good4questions');
+    }
+    
+    public function g4q_hasmany(){
+        return $this->hasMany(Good4question::class);
+    }
+    
+    public function g4c_belongs2many(){
+        return $this->belongsToMany(User::class, 'good4comments');
+    }
+    
+    // public function g4c_hasmany(){
+    //     return $this->hasMany(User::class, 'good4comments');
+    // }
 
     
     // 関連削除
@@ -74,9 +90,14 @@ class Question extends Model
             DB::transaction(function () use (&$question) {
             $question->complete_flag()->detach();
             $question->later_flag()->detach();
-            $question->comment()->delete();
+            $question->level_belongs2many()->detach();
+            $question->g4q_belongs2many()->detach();
+            $question->comment()->each(function ($comment){
+                $comment->delete();
+            });
             $question->tag()->detach();
-            $question->level()->detach();
+            
+            // $question->g4c_belongs2many()->detach();
             });
         });
     }

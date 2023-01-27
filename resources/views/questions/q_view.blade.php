@@ -8,11 +8,17 @@
                     </h2>
                 </div>
                 
-                <div>
-                    難易度（全ユーザ平均）：{{ round($question->dummy_level_avg_level, 2) }}
+                <div class='flex'>
+                    <div>
+                        難易度(全ユーザ平均)：{{ round($question->level_hasmany_avg_level, 2) }}
+                    </div>
+                    
+                    <div class='pl-5'>
+                        いいね数：{{ $question->g4q_hasmany_count }}
+                    </div>
                 </div>
                 
-                @auth
+                @if(Auth::user() && Auth::user()->id != $question->user->id )
                 <!--フラグ管理-->
                 <form action='/questions/{{ $question->id }}/flags' method='POST'>
                     @csrf
@@ -60,7 +66,7 @@
                         </div>
                     </div>
                 </form>
-                @endauth
+                @endif
                 
                 
                 <!--問題内容-->
@@ -94,6 +100,27 @@
                 
                 <!--タグの表示-->
                 @include('layouts.tag_layout')
+                
+                @if(Auth::user() && Auth::user()->id != $question->user->id )
+                    <form action='/questions{{ $question->id }}/good' method='POST'>
+                    @csrf
+                    @method('PUT')
+                        <div class='flex py-2'>
+                            <div>
+                                <div>
+                                    <label for="{{ $question->id }}_good" >いいね：</label>
+                                    <input type='checkbox' id='{{ $question->id }}_good' value='{{ Auth::user()->id }}' name='good'
+                                        @if($good) checked='checked' @endif
+                                    >
+                                </div>
+                            </div>
+                            
+                            <div class='pl-3'>
+                                <input type='submit' value='反映'>
+                            </div>
+                        </div>
+                    </form>
+                @endauth
                 
                 <!--編集の導線-->
                 @if(Auth::user() && Auth::user()->id==$question->user->id)
@@ -139,6 +166,33 @@
                     
                         <div class='pt-2 px-6'>
                             {{ $comment->body }}
+                        </div>
+                        
+                        <div class='flex py-2'>
+                            <div>
+                                いいね数：{{ $comment->g4c_hasmany_count }}
+                            </div>
+                        
+                            @if( Auth::user() && Auth::user()->id != $comment->user->id )
+                                <form action='/comment/{{ $comment->id }}/good' method='POST'>
+                                @csrf
+                                @method('PUT')
+                                    <div class='flex pl-5'>
+                                        <div>
+                                            <div>
+                                                <label for="{{ $comment->id }}_good" >いいね：</label>
+                                                <input type='checkbox' id='{{ $comment->id }}_good' value='{{ Auth::user()->id }}' name='good'
+                                                    @if($comment->g4c_hasmany_exists) checked='checked' @endif
+                                                >
+                                            </div>
+                                        </div>
+                                        
+                                        <div class='pl-3'>
+                                            <input type='submit' value='反映'>
+                                        </div>
+                                    </div>
+                                </form>
+                            @endif
                         </div>
                         
                         <!--コメントの編集の導線-->

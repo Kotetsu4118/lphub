@@ -67,7 +67,15 @@ class User extends Authenticatable
     }
     
     public function level(){
-        return $this->belongsToMany(Question::class, 'question_level');
+        return $this->belongsToMany(Question::class, 'question_levels');
+    }
+    
+    public function g4q(){
+        return $this->belongsToMany(Question::class, 'good4questions');
+    }
+    
+    public function g4c(){
+        return $this->belongsToMany(Question::class, 'good4comments');
     }
     
     // 関連削除
@@ -79,10 +87,18 @@ class User extends Authenticatable
             DB::transaction(function () use (&$user) {
                 $user->complete_flag()->detach();
                 $user->later_flag()->detach();
-                $user->comment()->delete();
+                $user->g4q()->detach();
+                $user->g4c()->detach();
+                $user->level()->detach();
+                $user->comment()->each(function ($comment){
+                    $comment->delete();
+                    
+                });
+                
                 $user->question()->each(function ($question){
                     $question->delete();
                 });
+                
             });
         });
     }

@@ -10,6 +10,7 @@ use App\Http\Requests\CommentRequest;
 use App\Http\Requests\DeleteRequest;
 
 
+
 class CommentController extends Controller
 {
     public function store_c(CommentRequest $request, Comment $comment, Question $question){
@@ -38,5 +39,12 @@ class CommentController extends Controller
         $id = $comment->question()->get()[0]->id;
         $comment->delete();
         return redirect('/questions/'.$id);
+    }
+    
+    // コメントへのいいね管理
+    public function g4c_belongs2many(Request $request, Comment $comment){
+        $comment->g4c_belongs2many()->syncWithoutDetaching($request->good);
+        
+        return redirect('/');
     }
 }

@@ -30,6 +30,7 @@ Route::controller(QuestionController::class)->middleware(['auth'])->group(functi
     Route::delete('/questions/{question}', 'delete_q')->name('delete_q');
     Route::put('/questions/{question}/flags', 'update_flags')->name('update_flags');
     Route::put('/questions/{question}/level', 'update_level')->name('update_level');
+    Route::put('/questions{question}/good', 'g4q');
     
     // マイページ系
     Route::get('/mypage', 'mypage')->name('mypage');
@@ -63,11 +64,12 @@ Route::controller(TagController::class)->middleware(['auth'])->group(function(){
 
 // コメント系
 Route::controller(CommentController::class)->middleware(['auth'])->group(function(){
-    Route::post('/questions/{question}/comment', [CommentController::class, 'store_c'])->name('store_c');
-    Route::get('/comment/{comment}/edit', [CommentController::class, 'edit_c'])->name('edit_c');
-    Route::put('/comment/{comment}/update', [CommentController::class, 'update_c'])->name('update_c');
-    Route::delete('/comment/{comment}/delete', [CommentController::class, 'delete_c'])->name('delete_c');
-});
+    Route::post('/questions/{question}/comment', 'store_c')->name('store_c');
+    Route::get('/comment/{comment}/edit', 'edit_c')->name('edit_c');
+    Route::put('/comment/{comment}/update', 'update_c')->name('update_c');
+    Route::delete('/comment/{comment}/delete', 'delete_c')->name('delete_c');
+    Route::put('/comment/{comment}/good', 'g4c_belongs2many')
+;});
 
 
 

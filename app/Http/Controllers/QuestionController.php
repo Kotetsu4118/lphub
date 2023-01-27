@@ -8,6 +8,7 @@ use App\Models\Language;
 use App\Models\Tag;
 use App\Models\User;
 use App\Models\Question_level;
+use App\Models\Good4question;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\QuestionRequest;
 use App\Http\Requests\DeleteRequest;
@@ -19,7 +20,17 @@ class QuestionController extends Controller
 {
     public function home(Question $question, Language $languages, Tag $tags, Question_level $question_levels){
         
-        $questions = $question->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
+        $questions = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany');
+        
+        if(Auth::user()){
+            $questions = $questions->withExists(['g4q_hasmany'=> function ($q){
+                $q->where('user_id', Auth::user()->id);
+            }]);
+        }
+        
+        $questions = $questions->orderBy('updated_at', 'DESC')->paginate(20);
+        
+        
         
         return view('questions/home')->with([
             'questions'=>$questions,
@@ -40,7 +51,7 @@ class QuestionController extends Controller
         }
         
         
-        $searced_questions = $query->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
+        $searced_questions = $query->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->orderBy('updated_at', 'DESC')->paginate(20);
         
         return view('questions/home_search')->with([
             'questions'=>$searced_questions,
@@ -52,39 +63,56 @@ class QuestionController extends Controller
     }
     
     public function q_view(Question $question){
+        
         // 難易度系の初期化
         $selected_level=0;
-        $level = false;
         
         if(Auth::user()){
-            // フラグ系
             $user_id = Auth::user()->id;
+            
+            // フラグ系
             $complete_flag = $question->complete_flag()->where('users.id', $user_id)->exists();
             $later_flag = $question->later_flag()->where('users.id', $user_id)->exists();
+            $good = $question->g4q_belongs2many()->where('users.id', $user_id)->exists();
+            
             // 難易度
-            $level = $question->level()->where('user_id', $user_id)->pluck('level');
+            $level = $question->level_belongs2many()->where('user_id', $user_id)->pluck('level');
         }
         else{
+            $level = false;
             $complete_flag = false;
             $later_flag = false;
-            
+            $good = false;
         }
-        
         
         // 難易度が設定されていれば更新
         if($level && count($level)!=0){
             $selected_level=$level[0];
         }
         
-        $question_with_level = $question->withAvg('dummy_level', 'level')->where('id', $question->id)->get();
+        // 選択済み難易度といいね数を追加
+        $question_with = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->where('id', $question->id)->get();
+        
+        
+        // コメント
+        $comments = $question->comment()->withCount('g4c_hasmany');
+        
+        if(Auth::user()){
+            $comments = $comments->withExists(['g4c_hasmany'=> function ($q){
+                    $q->where('user_id', Auth::user()->id);
+                }]);
+        }
+        
+        $comments = $comments->orderby('created_at')->get();
         
         return view('questions/q_view')->with([
-            'question'=>$question_with_level[0],
+            'question'=>$question_with[0],
             'tags'=>$question->tag()->get(),
-            'comments'=>$question->comment()->orderby('created_at')->get(),
+            'comments'=>$comments,
             'complete_flag' => $complete_flag,
             'later_flag' => $later_flag,
             'selected_level' => $selected_level,
+            'good' => $good,
         ]);
     }
     
@@ -149,6 +177,7 @@ class QuestionController extends Controller
         return redirect('/questions/'.$question->id);
     }
     
+    
     // マイページ系
     public function mypage(){
         $user = Auth::user();
@@ -168,7 +197,9 @@ class QuestionController extends Controller
     // 完了した問題
     public function my_completes(){
         $user = Auth::user();
-        $questions = $user->complete_flag()->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
+        $questions = $user->complete_flag()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+                $q->where('user_id', Auth::user()->id);
+            }])->orderBy('updated_at', 'DESC')->paginate(20);
         
         return view('mypage/completes')->with([
             'questions'=>$questions,
@@ -176,7 +207,7 @@ class QuestionController extends Controller
         ]);
     }
     
-    
+    // フラグ選択削除
     public function delete_complete_flags(Request $request){
         $user = Auth::user();
         $user->complete_flag()->detach($request['complete_flags']);
@@ -187,7 +218,9 @@ class QuestionController extends Controller
     // 後で解く問題
     public function my_laters(){
         $user = Auth::user();
-        $questions = $user->later_flag()->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
+        $questions = $user->later_flag()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+                $q->where('user_id', Auth::user()->id);
+            }])->orderBy('updated_at', 'DESC')->paginate(20);
         
         return view('mypage/laters')->with([
             'questions'=>$questions,
@@ -195,7 +228,7 @@ class QuestionController extends Controller
         ]);
     }
     
-    
+    // フラグ選択削除
     public function delete_later_flags(Request $request){
         $user = Auth::user();
         $user->later_flag()->detach($request['later_flags']);
@@ -206,7 +239,9 @@ class QuestionController extends Controller
     // 作成した問題
     public function my_creates(){
         $user = Auth::user();
-        $questions = $user->question()->withAvg('dummy_level', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
+        $questions = $user->question()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+                $q->where('user_id', Auth::user()->id);
+            }])->orderBy('updated_at', 'DESC')->paginate(20);
         
         return view('mypage/creates')->with([
             'questions'=>$questions,
@@ -214,6 +249,7 @@ class QuestionController extends Controller
         ]);
     }
     
+    // フラグ選択削除
     public function delete_creates(Request $request, Question $question){
         foreach($request['questions'] as $question_id){
             $question->where('id', $question_id)->delete();
@@ -222,11 +258,17 @@ class QuestionController extends Controller
         return redirect(route('my_creates'));
     }
     
+    // コメント
     public function my_comments(Question $question){
         $user = Auth::user();
-        $question_ids = [];
-        $comments = $user->comment()->orderby('question_id')->get();
+        $comments = $user->comment()->withCount('g4c_hasmany')->withExists(['g4c_hasmany'=> function ($q){
+                $q->where('user_id', Auth::user()->id);
+            }])->orderby('question_id')->get();
+        
+        
         $comments_group = $comments->groupby('question_id')->toArray();
+        
+        
         
         $questions = [];
         foreach($comments_group as $group){
@@ -243,9 +285,18 @@ class QuestionController extends Controller
     // 難易度管理
     public function update_level(Question $question, Request $request){
         $id = Auth::user()->id;
-        $question->level()->syncWithPivotValues([$id], ['level' => $request->level], false);
+        $question->level_belongs2many()->syncWithPivotValues([$id], ['level' => $request->level], false);
         
         return redirect('/questions/'.$question->id);
     }
+    
+    // 問題へのいいね管理
+    public function g4q(Request $request, Question $question){
+        $question->g4q_belongs2many()->syncWithoutDetaching($request->good);
+        
+        return redirect('/');
+    }
+    
+    
     
 }
