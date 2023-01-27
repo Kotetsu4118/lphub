@@ -19,13 +19,13 @@
                                 {{ $question->body }}
                             </div>
                             
-                            @if($question->dummy_level_avg_level)
-                                <div>
-                                    難易度：{{ round($question->dummy_level_avg_level, 2) }}
+                            @if($question->level_hasmany_avg_level)
+                                <div class='py-2'>
+                                    難易度：{{ round($question->level_hasmany_avg_level, 2) }}
                                 </div>
                             @else
-                                <div>
-                                    難易度：未評価    
+                                <div class='py-2'>
+                                    難易度：未評価
                                 </div>
                             @endif
                             
@@ -36,6 +36,33 @@
                             
                                 @include('layouts.tag_layout')
                             </div>
+                            
+                            
+                            <div class='py-2 flex'>
+                                <div>
+                                    いいね数：{{ $question->g4q_hasmany_count }}
+                                </div>
+                                
+                                @if(Auth::user() && Auth::user()->id != $question->user->id )
+                                <div class='pl-3'>
+                                <form action='/questions{{ $question->id }}/good' method='POST'>
+                                @csrf
+                                @method('PUT')
+                                    <div>
+                                        <label for="{{ $question->id }}_good" >いいね：</label>
+                                        <input type='checkbox' id='{{ $question->id }}_good' value='{{ Auth::user()->id }}' name='good'
+                                            @if($question->g4q_hasmany_exists) checked='checked' @endif
+                                        >
+                                    </div>
+                                </div>
+                                
+                                <div class='pl-3'>
+                                    <input type='submit' value='反映'>
+                                </div>
+                                </form>
+                                @endif
+                            </div>
+                            
                         </div>
                     </div>
                 </a>
@@ -45,6 +72,5 @@
 
 </div>
 
-{{--
+
 <div class="paginete">{{ $questions->links()}}</div>
---}}

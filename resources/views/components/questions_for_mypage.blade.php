@@ -55,6 +55,33 @@
                                 
                                     @include('layouts.tag_layout')
                                 </div>
+                                
+                                <div class='flex py-2'>
+                                    <div>
+                                        いいね数：{{ $question->g4q_hasmany_count }}
+                                    </div>
+                                
+                                    @auth
+                                        <form action='/questions{{ $question->id }}/good' method='POST'>
+                                        @csrf
+                                        @method('PUT')
+                                            <div class='flex pl-5'>
+                                                <div>
+                                                    <div>
+                                                        <label for="{{ $question->id }}_good" >いいね：</label>
+                                                        <input type='checkbox' id='{{ $question->id }}_good' value='{{ Auth::user()->id }}' name='good'
+                                                            @if($question->g4q_hasmany_exists) checked='checked' @endif
+                                                        >
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class='pl-3'>
+                                                    <input type='submit' value='反映'>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    @endauth
+                                </div>
                             </div>
                         </div>
                     </a>
