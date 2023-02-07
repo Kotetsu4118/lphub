@@ -9,7 +9,7 @@ export default function QuestionTags({tags}){
             {tags.map((tag)=>
                 <div className='pl-3'>
                     <Link>
-                        {tag.name}
+                        ・{tag.name}
                     </Link>
                 </div>
             )}

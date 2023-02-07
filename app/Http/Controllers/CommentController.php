@@ -8,7 +8,7 @@ use App\Models\Question;
 use App\Models\Comment;
 use App\Http\Requests\CommentRequest;
 use App\Http\Requests\DeleteRequest;
-
+use Inertia\Inertia;
 
 
 class CommentController extends Controller
@@ -24,21 +24,25 @@ class CommentController extends Controller
     
     
     public function edit_c(Comment $comment){
-        return view('comments/edit_c')->with('comment',$comment);
+        return Inertia::render('Comments/EditComment', [
+            'comment' => $comment,
+        ]);
     }
     
     public function update_c(CommentRequest $request, Comment $comment){
         $comment->body = $request->comment;
         $comment->save();
-        $id = $comment->question()->get()[0]->id;
+        // $id = $comment->question()->get()[0]->id;
+        $id = $comment->question()->id;
+        dd($id);
         
         return redirect('/questions/'.$id);
     }
     
-    public function delete_c(DeleteRequest $request, Comment $comment){
+    public function destroy_c(DeleteRequest $request, Comment $comment){
         $id = $comment->question()->get()[0]->id;
         $comment->delete();
-        return redirect('/questions/'.$id);
+        return redirect(route('view_q', $id));
     }
     
     // コメントへのいいね管理

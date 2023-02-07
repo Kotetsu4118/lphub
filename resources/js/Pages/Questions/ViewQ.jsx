@@ -6,6 +6,7 @@ import QuestionTags from '@/Components/QuestionTags';
 import Collapse from '@/Components/Collapse';
 import { Link, useForm, usePage } from '@inertiajs/inertia-react';
 import { useState } from 'react'
+import CommentForm from '@/Pages/Comments/CommentComponents/CommentForm';
 
 
 export default function View_q(props){
@@ -13,12 +14,13 @@ export default function View_q(props){
     const question = props.question;
     const selected_level = props.selected_level;
     
-    const { data, setData, put, errors, processing, recentlySuccessful, reset } = useForm({
+    const { data, setData, post, put, errors, processing, recentlySuccessful, reset } = useForm({
         complete : props.complete_flag,
         later : props.later_flag,
         level : selected_level,
         g4q : props.g4q,
         g4c : '',
+        comment : '',
     });
     
     const [open, setOpen] = useState(false);
@@ -58,7 +60,16 @@ export default function View_q(props){
                             </div>
                         )}
                         
+                        
                     </div>
+                    
+                    {props.auth.user != null && props.auth.user.id == comment.user_id &&(
+                        <div className="py-2">
+                            <Link href={route('edit_c', comment.id)}>
+                                <NormalButton >編集</NormalButton>
+                            </Link>
+                        </div>
+                    )}
                     
                 </div>
             </div>
@@ -101,7 +112,15 @@ export default function View_q(props){
     const submit = (e) => {
         e.preventDefault();
         
-        put('/questions/' + question.id + '/level', data.level);
+        post(route('store_c', question.id));
+    };
+    
+    const onhandleChange = (event)=>{
+        setData(event.target.id, event.target.value);  
+    };
+    
+    const resetComment = ()=>{
+        reset('comment');
     };
     
     return (
@@ -110,6 +129,8 @@ export default function View_q(props){
             auth={props.auth}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{question.title}</h2>}
         >
+            <div onClick={()=>(console.log(data))}>Debag</div>
+
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className='p-4'>
@@ -234,10 +255,17 @@ export default function View_q(props){
                         コメントはまだありません
                     </div>
                 }
+                
+                <CommentForm
+                    value={data.comment}
+                    onhandleChange={onhandleChange}
+                    errors={errors}
+                    processing={processing}
+                    clickReset={resetComment}
+                    submit={submit}
+                />
+                
             </div>
-            
-            
-            
             
         </DualLayout>
     );
