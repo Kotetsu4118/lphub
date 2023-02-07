@@ -12,13 +12,24 @@ use App\Models\Good4question;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\QuestionRequest;
 use App\Http\Requests\DeleteRequest;
+use Inertia\Inertia;
 
-// リクエスト後で作ってuse
-// 連携するmodelを後で作ってuse
 
 class QuestionController extends Controller
-{
+{   
+    // ログイン確認
+    public function isLogin(){
+        if(Auth::user()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    // home
     public function home(Question $question, Language $languages, Tag $tags, Question_level $question_levels){
+        // 'status' => session('status'), いるかどうかわからん
+
         
         $questions = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany');
         
@@ -26,19 +37,20 @@ class QuestionController extends Controller
             $questions = $questions->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
             }]);
+            
         }
         
-        $questions = $questions->orderBy('updated_at', 'DESC')->paginate(20);
-        
-        
-        
-        return view('questions/home')->with([
+        $questions = $questions->with(['user', 'tag'])->orderBy('updated_at', 'DESC')->paginate(20);
+
+        return Inertia::render('Questions/home', [
             'questions'=>$questions,
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
+            'logined' => QuestionController::isLogin(),
         ]);
     }
     
+    // 検索結果
     public function home_search(Question $questions, Language $languages, Tag $tags, Request $request){
         $query = Question::query();
         
@@ -62,18 +74,18 @@ class QuestionController extends Controller
         
     }
     
-    public function q_view(Question $question){
+    // 問題詳細
+    public function view_q(Question $question){
         
         // 難易度系の初期化
-        $selected_level=0;
+        $selected_level=null;
         
         if(Auth::user()){
             $user_id = Auth::user()->id;
-            
             // フラグ系
             $complete_flag = $question->complete_flag()->where('users.id', $user_id)->exists();
             $later_flag = $question->later_flag()->where('users.id', $user_id)->exists();
-            $good = $question->g4q_belongs2many()->where('users.id', $user_id)->exists();
+            $g4q = $question->g4q_belongs2many()->where('users.id', $user_id)->exists();
             
             // 難易度
             $level = $question->level_belongs2many()->where('user_id', $user_id)->pluck('level');
@@ -82,7 +94,7 @@ class QuestionController extends Controller
             $level = false;
             $complete_flag = false;
             $later_flag = false;
-            $good = false;
+            $g4q = false;
         }
         
         // 難易度が設定されていれば更新
@@ -91,8 +103,7 @@ class QuestionController extends Controller
         }
         
         // 選択済み難易度といいね数を追加
-        $question_with = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->where('id', $question->id)->get();
-        
+        $question_with = $question->with('user')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->find($question->id);
         
         // コメント
         $comments = $question->comment()->withCount('g4c_hasmany');
@@ -103,35 +114,43 @@ class QuestionController extends Controller
                 }]);
         }
         
-        $comments = $comments->orderby('created_at')->get();
+        $comments = $comments->with('user')->orderby('created_at')->get();
+        // dd($comments);
         
-        return view('questions/q_view')->with([
-            'question'=>$question_with[0],
+        return Inertia::render('Questions/view_q', [
+            'question'=>$question_with,
             'tags'=>$question->tag()->get(),
             'comments'=>$comments,
             'complete_flag' => $complete_flag,
             'later_flag' => $later_flag,
             'selected_level' => $selected_level,
-            'good' => $good,
+            'g4q' => $g4q,
+            'logined'=> QuestionController::isLogin(),
         ]);
     }
     
+    
     public function create_q(Language $languages, Tag $tags){
-        return view('questions/create_q')->with([
+        return Inertia::render('Questions/create_q',[
             'languages'=>$languages->get(),
-            'tags'=>$tags->orderby('name')->get()
+            'tags'=>$tags->orderby('name')->get(),
+            'logined'=> QuestionController::isLogin(),
         ]);
     }
+    
     
     public function store_q(QuestionRequest $request, Question $question){
         $question->user_id = Auth::user()->id;
-        $question->fill($request['question']);
+        // $question->fill($request['question']);
+        $question->fill($request->validated());
         $question->language_id = $request->language_id;
         $question->save();
-        $question->tag()->sync($request['tags']);
+        // $question->tag()->sync($request['tags']);
+        $question->tag()->sync($request['post_tags']);
         
-        return redirect('/questions/'.$question->id);
+        return redirect(route('view_q',$question->id));
     }
+    
     
     public function edit_q(Question $question, Language $languages, Tag $tags){
         // くそコードだから、上手く書き直したい（idを配列形式でcheceked_tag）
@@ -141,23 +160,19 @@ class QuestionController extends Controller
         }
         
         
-        return view('questions/edit_q')->with([
-            'question'=>$question,
+        return Inertia::render('Questions/edit_q',[
+            'question'=>$question->with('language')->find($question->id),
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
             'checked_tag'=>$list,
+            'logined' => QuestionController::isLogin(),
         ]);
     }
     
     public function update_q(QuestionRequest $request, Question $question){
-        
-        // $request->validateWithBag('userDeletion', [
-        //     'password' => ['required', 'current-password'],
-        // ]);
-        
-        $question->fill($request['question']);
+        $question->fill($request->validated());
         $question->language_id = $request->language_id;
-        $question->tag()->sync($request['tags']);
+        $question->tag()->sync($request['put_tags']);
         $question->save();
         
         return redirect('/questions/'.$question->id);
@@ -170,11 +185,21 @@ class QuestionController extends Controller
     
     
     // フラグ管理
-    public function update_flags(Request $request, Question $question){
-        $question->complete_flag()->sync($request->complete_flag);
-        $question->later_flag()->sync($request->later_flag);
-        
-        return redirect('/questions/'.$question->id);
+    // 完了
+    public function update_complete(Request $request, Question $question){
+        if($request->complete){
+            $question->complete_flag()->sync(Auth::user()->id);
+        }else{
+            $question->complete_flag()->detach(Auth::user()->id);
+        }
+    }
+    // 後で
+    public function update_later(Request $request, Question $question){
+        if($request->later){
+            $question->later_flag()->sync(Auth::user()->id);
+        }else{
+            $question->later_flag()->detach(Auth::user()->id);
+        }
     }
     
     
@@ -208,6 +233,7 @@ class QuestionController extends Controller
     }
     
     // フラグ選択削除
+    // 完了
     public function delete_complete_flags(Request $request){
         $user = Auth::user();
         $user->complete_flag()->detach($request['complete_flags']);
@@ -229,6 +255,7 @@ class QuestionController extends Controller
     }
     
     // フラグ選択削除
+    // 後で
     public function delete_later_flags(Request $request){
         $user = Auth::user();
         $user->later_flag()->detach($request['later_flags']);
@@ -250,6 +277,7 @@ class QuestionController extends Controller
     }
     
     // フラグ選択削除
+    // 作成した問題
     public function delete_creates(Request $request, Question $question){
         foreach($request['questions'] as $question_id){
             $question->where('id', $question_id)->delete();
@@ -258,7 +286,7 @@ class QuestionController extends Controller
         return redirect(route('my_creates'));
     }
     
-    // コメント
+    // コメント一覧
     public function my_comments(Question $question){
         $user = Auth::user();
         $comments = $user->comment()->withCount('g4c_hasmany')->withExists(['g4c_hasmany'=> function ($q){
@@ -287,16 +315,18 @@ class QuestionController extends Controller
         $id = Auth::user()->id;
         $question->level_belongs2many()->syncWithPivotValues([$id], ['level' => $request->level], false);
         
-        return redirect('/questions/'.$question->id);
+        // return redirect('/questions/'.$question->id);
     }
     
     // 問題へのいいね管理
     public function g4q(Request $request, Question $question){
-        $question->g4q_belongs2many()->syncWithoutDetaching($request->good);
-        
-        return redirect('/');
+        if($request->g4q){
+            // $question->g4q_belongs2many()->syncWithoutDetaching($request->good);
+            $question->g4q_belongs2many()->sync(Auth::user()->id);
+        }else{
+            $question->g4q_belongs2many()->detach(Auth::user()->id);
+        }
     }
-    
     
     
 }

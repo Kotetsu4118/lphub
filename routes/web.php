@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\CommentController;
-use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,20 +20,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-
 Route::controller(QuestionController::class)->middleware(['auth'])->group(function(){
     Route::post('/questions', 'store_q')->name('sotre_q');
     Route::get('/create_q', 'create_q')->name('create_q');
     Route::get('/questions/{question}/edit_q', 'edit_q')->name('edit_q');
     Route::put('/questions/{question}', 'update_q')->name('update_q');
     Route::delete('/questions/{question}', 'delete_q')->name('delete_q');
-    Route::put('/questions/{question}/flags', 'update_flags')->name('update_flags');
+    Route::put('/questions/{question}/complete', 'update_complete')->name('update_complete');
+    Route::put('/questions/{question}/later', 'update_later')->name('update_later');
     Route::put('/questions/{question}/level', 'update_level')->name('update_level');
-    Route::put('/questions{question}/good', 'g4q');
+    Route::put('/questions{question}/good', 'g4q')->name('update_g4q');
     
     // マイページ系
     Route::get('/mypage', 'mypage')->name('mypage');
@@ -47,7 +46,7 @@ Route::controller(QuestionController::class)->middleware(['auth'])->group(functi
 Route::get('/', [QuestionController::class, 'home'])->name('home');
 Route::get('/home_t/{tag}', [TagController::class, 'home_t'])->name('home_t');
 Route::get('home_search/{search_word}', [QuestionController::class, 'home_search'])->name('home_search');
-Route::get('/questions/{question}', [QuestionController::class, 'q_view'])->name('q_view');
+Route::get('/questions/{question}', [QuestionController::class, 'view_q'])->name('view_q');
 
 // 認証つけるか迷いどころ
 // タグ系
@@ -65,18 +64,28 @@ Route::controller(TagController::class)->middleware(['auth'])->group(function(){
 // コメント系
 Route::controller(CommentController::class)->middleware(['auth'])->group(function(){
     Route::post('/questions/{question}/comment', 'store_c')->name('store_c');
-    Route::get('/comment/{comment}/edit', 'edit_c')->name('edit_c');
-    Route::put('/comment/{comment}/update', 'update_c')->name('update_c');
-    Route::delete('/comment/{comment}/delete', 'delete_c')->name('delete_c');
-    Route::put('/comment/{comment}/good', 'g4c_belongs2many')
+    Route::get('/comments/{comment}/edit', 'edit_c')->name('edit_c');
+    Route::put('/comments/{comment}/update', 'update_c')->name('update_c');
+    Route::delete('/comments/{comment}/delete', 'delete_c')->name('delete_c');
+    Route::put('/comments/{comment}/good', 'g4c')->name('update_g4c');
 ;});
 
 
 
 
 
+
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
+
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

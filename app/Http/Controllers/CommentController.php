@@ -42,9 +42,15 @@ class CommentController extends Controller
     }
     
     // コメントへのいいね管理
-    public function g4c_belongs2many(Request $request, Comment $comment){
-        $comment->g4c_belongs2many()->syncWithoutDetaching($request->good);
+    // コメントへのいいね管理
+    public function g4c(Request $request, Comment $comment){
+        if($request->g4c){
+            $comment->g4c_belongs2many()->sync(Auth::user()->id);
+        }else{
+            $comment->g4c_belongs2many()->detach(Auth::user()->id);
+        }
         
-        return redirect('/');
+        // $question->g4c_belongs2many()->syncWithoutDetaching($request->good);
+        
     }
 }
