@@ -1,10 +1,5 @@
 import DualLayout from '@/Layouts/DualLayout';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/inertia-react';
-import SelectLang from '@/Components/SelectLang';
 import QuestionForm from '@/Pages/Questions/QuestionComponents/QuestionForm';
 
 export default function CreateQ(props) {
