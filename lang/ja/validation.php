@@ -176,10 +176,10 @@ return [
 
     'attributes' => [
         'language_id' => '言語選択',
-        'question.language_id' => '言語選択',
-        'question.title' => 'タイトル',
-        'question.body' => '問題文',
-        'question.answer' => '答え',
+        'language_id' => '言語選択',
+        '.title' => 'タイトル',
+        'body' => '問題文',
+        'answer' => '答え',
         'name' => 'そのタグ',
         'comment' => 'コメント',
         'profile' => 'プロフィール',

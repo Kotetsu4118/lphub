@@ -24,9 +24,9 @@ class QuestionRequest extends FormRequest
     public function rules()
     {   
         return [
-            'question.title' => 'required | string | max:20',
-            'question.body' => 'required | string | max:2000',
-            'question.answer' => 'required | string | max:2000',
+            'title' => 'required | string | max:20',
+            'body' => 'required | string | max:2000',
+            'answer' => 'required | string | max:2000',
             'language_id' => 'required',
         ];
     }
