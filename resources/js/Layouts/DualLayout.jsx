@@ -56,8 +56,8 @@ export default function DualLayout({ logined, auth, header, children, }) {
                                             </Dropdown.Trigger>
         
                                             <Dropdown.Content>
-                                                <Dropdown.Link href={route('home')}>一覧</Dropdown.Link>
-                                                <Dropdown.Link href={route('home')}>作成</Dropdown.Link>
+                                                <Dropdown.Link href={route('index_t')}>一覧</Dropdown.Link>
+                                                <Dropdown.Link href={route('create_t')}>作成</Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>
                                     </div>

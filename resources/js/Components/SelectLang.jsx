@@ -6,8 +6,12 @@ export default function SelectLang({languages, changeLang, selected, init,}){
   
   return(
       <select onChange={(e)=>(changeLang(e))} className='w-36'>
-          { init == !null &&(
-              <option selected hidden>言語を選択</option>
+          { init == 'all' && 
+            <option selected value='all'>全て</option>
+          }
+          
+          { init == !null && init != 'all' && (
+            <option selected hidden>言語を選択</option>
           )}
           {contents}
       </select>

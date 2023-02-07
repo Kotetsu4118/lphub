@@ -16,7 +16,7 @@ export default function EditQ(props) {
     const _languages = props.languages;
     const default_tags = new Set(props.checked_tag);
     
-    const { data, setData, put, errors, processing, reset } = useForm({
+    const { data, setData, put, errors, processing, reset, transform } = useForm({
         title : question.title,
         body : question.body,
         answer : question.answer,

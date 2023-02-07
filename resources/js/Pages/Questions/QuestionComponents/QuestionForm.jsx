@@ -92,6 +92,12 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                     </div>
                 </div> 
                 
+                <div>
+                    <Link href={route('create_t')}>
+                        <NormalButton>タグを作成する</NormalButton>
+                    </Link>
+                </div>
+                
             
                 <div className="py-2">
                     <PrimaryButton processing={processing}>保存</PrimaryButton>

@@ -17,20 +17,11 @@ use Inertia\Inertia;
 
 class QuestionController extends Controller
 {   
-    // ログイン確認
-    public function isLogin(){
-        if(Auth::user()){
-            return true;
-        }else{
-            return false;
-        }
-    }
     
     // home
     public function home(Question $question, Language $languages, Tag $tags, Question_level $question_levels){
         // 'status' => session('status'), いるかどうかわからん
 
-        
         $questions = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany');
         
         if(Auth::user()){
@@ -46,7 +37,6 @@ class QuestionController extends Controller
             'questions'=>$questions,
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
-            'logined' => QuestionController::isLogin(),
         ]);
     }
     
@@ -115,7 +105,6 @@ class QuestionController extends Controller
         }
         
         $comments = $comments->with('user')->orderby('created_at')->get();
-        // dd($comments);
         
         return Inertia::render('Questions/view_q', [
             'question'=>$question_with,
@@ -125,7 +114,6 @@ class QuestionController extends Controller
             'later_flag' => $later_flag,
             'selected_level' => $selected_level,
             'g4q' => $g4q,
-            'logined'=> QuestionController::isLogin(),
         ]);
     }
     
@@ -134,18 +122,15 @@ class QuestionController extends Controller
         return Inertia::render('Questions/create_q',[
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
-            'logined'=> QuestionController::isLogin(),
         ]);
     }
     
     
     public function store_q(QuestionRequest $request, Question $question){
         $question->user_id = Auth::user()->id;
-        // $question->fill($request['question']);
         $question->fill($request->validated());
         $question->language_id = $request->language_id;
         $question->save();
-        // $question->tag()->sync($request['tags']);
         $question->tag()->sync($request['post_tags']);
         
         return redirect(route('view_q',$question->id));
@@ -165,7 +150,6 @@ class QuestionController extends Controller
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
             'checked_tag'=>$list,
-            'logined' => QuestionController::isLogin(),
         ]);
     }
     

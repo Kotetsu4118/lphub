@@ -21,18 +21,6 @@ export default function QuestionIndex({questions}){
                             作成者：{question.user.name}
                         </div>
                         
-                        {/*
-                        <div className='flex py-2'>
-                            <div className='flex'>
-                            タグ：
-                                {question.tag.map((tag)=>
-                                    <div className='pl-3'>
-                                        {tag.name}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        */}
                         <QuestionTags
                             tags={question.tag}
                         />

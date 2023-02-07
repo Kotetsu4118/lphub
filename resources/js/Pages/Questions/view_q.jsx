@@ -51,7 +51,7 @@ export default function View_q(props){
                         
                         {/*いいねする*/}
                         {/*ログインしている || ログインユーザidとコメントユーザidの不一致*/}
-                        {props.logined && props.auth.user.id != comment.user_id &&(
+                        {props.auth.user != null && props.auth.user.id != comment.user_id &&(
                             <div className='pl-3'>
                                 <label>いいね：</label>
                                 <input type='checkbox' value={comment.id} defaultChecked={comment.g4c_hasmany_exists} onClick={(e)=>(changeG4C(e))}/>
@@ -129,7 +129,7 @@ export default function View_q(props){
                         
                         
                         {/*フラグ管理*/}
-                        { props.logined && props.auth.user.id != question.user.id && (
+                        { props.auth.user != null && props.auth.user.id != question.user.id && (
                         
                         <div className='py-2'>
                             <CompleteLater
@@ -143,7 +143,7 @@ export default function View_q(props){
                         )}
                         
                         {/*難易度の評価-->*/}
-                        { props.logined && props.auth.user.id != question.user_id && (
+                        { props.auth.user != null && props.auth.user.id != question.user_id && (
                         <div className='py-2'>
                             難易度を評価する：
                             <SelectLevel
@@ -199,7 +199,7 @@ export default function View_q(props){
                         </div>
                         
                         {/*いいね*/}
-                        {props.logined && props.auth.user.id != question.user_id &&(
+                        {props.auth.user != null && props.auth.user.id != question.user_id &&(
                         <div className='py-2'>
                             <label>いいね：</label>
                             <input type='checkbox' defaultChecked={props.g4q} onClick={(e)=>(changeG4Q(e))}/>
@@ -207,7 +207,7 @@ export default function View_q(props){
                         )}
                         
                         {/*編集の導線*/}
-                        { props.logined && props.auth.user.id == question.user_id && (
+                        { props.auth.user != null && props.auth.user.id == question.user_id && (
                             
                             <div className="pt-2">
                                 <Link href={route('edit_q', question.id)}>
