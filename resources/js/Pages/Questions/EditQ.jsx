@@ -1,14 +1,8 @@
 import DualLayout from '@/Layouts/DualLayout';
-// import InputError from '@/Components/InputError';
-// import InputLabel from '@/Components/InputLabel';
-// import PrimaryButton from '@/Components/PrimaryButton';
-// import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/inertia-react';
-// import SelectLang from '@/Components/SelectLang';
 import QuestionForm from '@/Pages/Questions/QuestionComponents/QuestionForm';
-
-
-
+import DeleteForm from '@/Components/DeleteForm'
+import { useState } from 'react'
 
 export default function EditQ(props) {
     const question = props.question;
@@ -16,7 +10,9 @@ export default function EditQ(props) {
     const _languages = props.languages;
     const default_tags = new Set(props.checked_tag);
     
-    const { data, setData, put, errors, processing, reset, transform } = useForm({
+    const [confirmingCommentDeletion, setConfirmingCommentDeletion] = useState(false);
+    
+    const { data, setData, put,　delete: destroy, errors, processing, reset, transform } = useForm({
         title : question.title,
         body : question.body,
         answer : question.answer,
@@ -24,6 +20,7 @@ export default function EditQ(props) {
         language_id : question.language_id,
         post_tags : '',
         init_lang : false,
+        confirm : '',
     });
     
     
@@ -82,16 +79,38 @@ export default function EditQ(props) {
     };
     
     
-    const clickClear = ()=>{
+    const clickReset = ()=>{
         reset();
     };
+    
+    // 削除系
+    const confirmCommentDeletion = () => {
+        setConfirmingCommentDeletion(true);
+    };
+    
+    const closeModal = () => {
+        setConfirmingCommentDeletion(false);
+
+        reset();
+    };
+    
+     const deleteComment = (e) => {
+        e.preventDefault();
+
+        destroy(route('delete_q', question.id), {
+            preserveScroll: true,
+            onSuccess: () => closeModal(),
+            onFinish: () => reset(),
+        });
+    };
+
     
     
     return(
         <DualLayout
             logined={props.auth.user != null}
             auth={props.auth}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">編集：{question.title}</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">問題の編集：{question.title}</h2>}
         >
         <div onClick={()=>(console.log(data))}>Debag</div>
         <div onClick={()=>(console.log(props.checked_tag))}>props.checked_tag</div>
@@ -109,10 +128,28 @@ export default function EditQ(props) {
                 submit={submit}
                 changeLang={changeLang}
                 onhandleChange={onhandleChange}
-                cancel_link={'/'}
-                clickClear={clickClear}
+                cancel_link={route('view_q', question.id)}
+                clickClear={clickReset}
             />
-
+            
+            <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
+            <div className='py-4'>
+                <DeleteForm
+                    onDengerButton={confirmCommentDeletion}
+                    showModal={confirmingCommentDeletion}
+                    onClose={closeModal}
+                    onSubmit={deleteComment}
+                    text_id={'confirm'}
+                    input_value={data.confirm}
+                    label_value={'確認'}
+                    processing={processing}
+                    handleChange={onhandleChange}
+                    errors={errors}
+                    closeModal={closeModal}
+                />
+            
+            </div>
+            </div>
         
         </DualLayout>
     );

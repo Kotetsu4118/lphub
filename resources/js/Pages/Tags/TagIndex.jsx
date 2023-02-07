@@ -19,34 +19,34 @@ export default function TagIndex(props){
     
     const tags = _tags.map((tag)=>
         <div>
-            <div className>
-                <div className='px-2 flex-1'>
-                    <div style={{ display: data.language_id == 'all' || data.language_id == tag.language_id ? '' : 'none' }} 
-                        // id={tag.id}
-                        // name={tag.id}
-                        // value={tag.id}
-                        className='py-2'
-                    >
-                        <div  className='bg-white overflow-hidden shadow-sm sm:rounded-lg'>
+            <div style={{ display: data.language_id == 'all' || data.language_id == tag.language_id ? '' : 'none' }} 
+                // id={tag.id}
+                // name={tag.id}
+                // value={tag.id}
+                className='py-2'
+            >
+                <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg'>
+                    <div className='py-4 flex justify-between'>
+                        <div vertical-align='middle' className='px-2'>
                             {tag.name}
-                        
-                            {props.auth.user != null &&
-                            <div align='right'>
-                                {/*
-                                <div>
-                                    <Link>
-                                        <NormalButton>問題を見る</NormalButton>
-                                    </Link>
-                                </div>
-                                */}
-                                <div>
-                                    <Link href={route('edit_t', tag.id)}>
-                                        <NormalButton>編集</NormalButton>
-                                    </Link>
-                                </div>
-                            </div>
-                            }
                         </div>
+                        
+                        {props.auth.user != null &&
+                        <div align='right' className='px-2 flex'>
+                            
+                            <div>
+                                <Link>
+                                    <NormalButton>問題を見る</NormalButton>
+                                </Link>
+                            </div>
+                            
+                            <div className='pl-3'>
+                                <Link href={route('edit_t', tag.id)}>
+                                    <NormalButton>編集</NormalButton>
+                                </Link>
+                            </div>
+                        </div>
+                        }
                     </div>
                 </div>
             </div>

@@ -66,7 +66,7 @@ Route::controller(CommentController::class)->middleware(['auth'])->group(functio
     Route::post('/questions/{question}/comment', 'store_c')->name('store_c');
     Route::get('/comments/{comment}/edit', 'edit_c')->name('edit_c');
     Route::put('/comments/{comment}/update', 'update_c')->name('update_c');
-    Route::delete('/comments/{comment}/delete', 'delete_c')->name('delete_c');
+    Route::delete('/comments/{comment}/destroy', 'destroy_c')->name('destroy_c');
     Route::put('/comments/{comment}/good', 'g4c')->name('update_g4c');
 ;});
 

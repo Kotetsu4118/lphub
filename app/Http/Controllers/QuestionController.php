@@ -33,7 +33,7 @@ class QuestionController extends Controller
         
         $questions = $questions->with(['user', 'tag'])->orderBy('updated_at', 'DESC')->paginate(20);
 
-        return Inertia::render('Questions/home', [
+        return Inertia::render('Questions/Home', [
             'questions'=>$questions,
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
@@ -106,7 +106,7 @@ class QuestionController extends Controller
         
         $comments = $comments->with('user')->orderby('created_at')->get();
         
-        return Inertia::render('Questions/view_q', [
+        return Inertia::render('Questions/ViewQ', [
             'question'=>$question_with,
             'tags'=>$question->tag()->get(),
             'comments'=>$comments,
@@ -119,7 +119,7 @@ class QuestionController extends Controller
     
     
     public function create_q(Language $languages, Tag $tags){
-        return Inertia::render('Questions/create_q',[
+        return Inertia::render('Questions/CreateQ',[
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
         ]);
@@ -145,7 +145,7 @@ class QuestionController extends Controller
         }
         
         
-        return Inertia::render('Questions/edit_q',[
+        return Inertia::render('Questions/EditQ',[
             'question'=>$question->with('language')->find($question->id),
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
@@ -279,8 +279,6 @@ class QuestionController extends Controller
         
         
         $comments_group = $comments->groupby('question_id')->toArray();
-        
-        
         
         $questions = [];
         foreach($comments_group as $group){

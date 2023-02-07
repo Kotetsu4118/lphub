@@ -34,7 +34,7 @@ export default function EditTag(props) {
         <DualLayout
             logined={props.auth.user != null}
             auth={props.auth}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">タグ編集：_name</h2>}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">タグの編集：{data.name}（言語＝{_languages[data.language_id].name}）</h2>}
         >
             <div onClick={()=>(console.log(data))}>Debag</div>
 
@@ -48,7 +48,7 @@ export default function EditTag(props) {
                 errors={errors}
                 processing={processing}
                 clickReset={clickReset}
-                cancel_link={route('home')}
+                cancel_link={route('index_t')}
                 changeLang={changeLang}
             />
         
