@@ -146,6 +146,7 @@ export default function EditQ(props) {
                     handleChange={onhandleChange}
                     errors={errors}
                     closeModal={closeModal}
+                    message={'この問題を削除しますか?'}
                 />
             
             </div>

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\QuestionRequest;
 use App\Http\Requests\DeleteRequest;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 
 class QuestionController extends Controller
@@ -195,7 +196,7 @@ class QuestionController extends Controller
         $creates = $user->question()->count();
         $comments = $user->comment()->count();
         
-        return view('mypage/mypage')->with([
+        return Inertia::render('Mypages/MypageTop', [
             'completes' => $completes,
             'laters' => $laters,
             'creates' => $creates,
@@ -206,13 +207,13 @@ class QuestionController extends Controller
     // 完了した問題
     public function my_completes(){
         $user = Auth::user();
-        $questions = $user->complete_flag()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+        $questions = $user->complete_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
             }])->orderBy('updated_at', 'DESC')->paginate(20);
         
-        return view('mypage/completes')->with([
+        return Inertia::render('Mypages/MyCompletes', [
             'questions'=>$questions,
-            'flag_type'=>'complete',
+            'languages'=> DB::table('languages')->get(),
         ]);
     }
     
@@ -220,7 +221,7 @@ class QuestionController extends Controller
     // 完了
     public function delete_complete_flags(Request $request){
         $user = Auth::user();
-        $user->complete_flag()->detach($request['complete_flags']);
+        $user->complete_flag()->detach($request['checked']);
         
         return redirect(route('my_completes'));
     }
@@ -228,13 +229,14 @@ class QuestionController extends Controller
     // 後で解く問題
     public function my_laters(){
         $user = Auth::user();
-        $questions = $user->later_flag()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+        $questions = $user->later_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
             }])->orderBy('updated_at', 'DESC')->paginate(20);
+            
         
-        return view('mypage/laters')->with([
+        return Inertia::render('Mypages/MyLaters', [
             'questions'=>$questions,
-            'flag_type'=>'later',
+            'languages'=> DB::table('languages')->get(),
         ]);
     }
     
@@ -242,7 +244,7 @@ class QuestionController extends Controller
     // 後で
     public function delete_later_flags(Request $request){
         $user = Auth::user();
-        $user->later_flag()->detach($request['later_flags']);
+        $user->later_flag()->detach($request['checked']);
         
         return redirect(route('my_laters'));
     }
@@ -250,22 +252,20 @@ class QuestionController extends Controller
     // 作成した問題
     public function my_creates(){
         $user = Auth::user();
-        $questions = $user->question()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+        $questions = $user->question()->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
             }])->orderBy('updated_at', 'DESC')->paginate(20);
         
-        return view('mypage/creates')->with([
+        return Inertia::render('Mypages/MyCreates')->with([
             'questions'=>$questions,
-            'flag_type'=>'delete',
+            'languages'=> DB::table('languages')->get(),
         ]);
     }
     
     // フラグ選択削除
     // 作成した問題
     public function delete_creates(Request $request, Question $question){
-        foreach($request['questions'] as $question_id){
-            $question->where('id', $question_id)->delete();
-        }
+        $question->whereIn('id', $request->checked)->delete();
         
         return redirect(route('my_creates'));
     }
@@ -273,21 +273,29 @@ class QuestionController extends Controller
     // コメント一覧
     public function my_comments(Question $question){
         $user = Auth::user();
-        $comments = $user->comment()->withCount('g4c_hasmany')->withExists(['g4c_hasmany'=> function ($q){
-                $q->where('user_id', Auth::user()->id);
-            }])->orderby('question_id')->get();
+        $comments = $user->comment()->withCount('g4c_hasmany')
+            // ->withExists(['g4c_hasmany'=> function ($q){
+            //     $q->where('user_id', Auth::user()->id);}])
+            ->orderby('question_id')->get();
         
         
-        $comments_group = $comments->groupby('question_id')->toArray();
+        // $comment_group = $comments->groupby('question_id')->toArray();
         
-        $questions = [];
-        foreach($comments_group as $group){
-            array_push($questions, $question->where('id', $group[0]['question_id'])->get()->toArray()  );
-        }
         
-        return view('mypage/comments')->with([
-            'comments_group'=>$comments_group,
+        // $questions = [];
+        // foreach($comment_group as $group){
+        //     array_push($questions, $question->where('id', $group[0]['question_id'])->get()->toArray()  );
+        // }
+        
+        
+        $questions = $question->with(['comment'=>function($c){$c->where('user_id', Auth::user()->id);}]);
+        $questions->whereHas('comment')->orderby('updated_at', 'DESC')->get();
+
+
+        return Inertia::render('Mypages/MyComments', [
+            // 'comment_group'=>$comment_group,
             'questions'=>$questions,
+            'comments'=>$comments
         ]);
     }
     

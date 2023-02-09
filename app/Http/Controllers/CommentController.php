@@ -25,7 +25,7 @@ class CommentController extends Controller
     
     public function edit_c(Comment $comment){
         return Inertia::render('Comments/EditComment', [
-            'comment' => $comment,
+            'comment' => $comment->with('question')->find($comment->id),
         ]);
     }
     
@@ -43,6 +43,10 @@ class CommentController extends Controller
         $id = $comment->question()->get()[0]->id;
         $comment->delete();
         return redirect(route('view_q', $id));
+    }
+    
+    public function delete_c(Comment $comment, Request $request){
+        $comment->whereIn('id', $request->checked)->delete();
     }
     
     // コメントへのいいね管理
