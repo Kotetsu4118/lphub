@@ -91,11 +91,11 @@ export default function DualLayout({ logined, auth, header, children, }) {
                                             </Dropdown.Trigger>
         
                                             <Dropdown.Content>
-                                                <Dropdown.Link href={route('home')}>マイページトップ</Dropdown.Link>
-                                                <Dropdown.Link href={route('home')}>作成した問題</Dropdown.Link>
-                                                <Dropdown.Link href={route('home')}>完了した問題</Dropdown.Link>
-                                                <Dropdown.Link href={route('home')}>後で解く問題</Dropdown.Link>
-                                                <Dropdown.Link href={route('home')}>投稿したコメント</Dropdown.Link>
+                                                <Dropdown.Link href={route('mypage')}>マイページトップ</Dropdown.Link>
+                                                <Dropdown.Link href={route('my_creates')}>作成した問題</Dropdown.Link>
+                                                <Dropdown.Link href={route('my_completes')}>完了した問題</Dropdown.Link>
+                                                <Dropdown.Link href={route('my_laters')}>後で解く問題</Dropdown.Link>
+                                                <Dropdown.Link href={route('my_comments')}>投稿したコメント</Dropdown.Link>
                                             </Dropdown.Content>
                                         </Dropdown>
                                     </div>

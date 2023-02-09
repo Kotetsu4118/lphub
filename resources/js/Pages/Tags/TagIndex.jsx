@@ -20,9 +20,6 @@ export default function TagIndex(props){
     const tags = _tags.map((tag)=>
         <div>
             <div style={{ display: data.language_id == 'all' || data.language_id == tag.language_id ? '' : 'none' }} 
-                // id={tag.id}
-                // name={tag.id}
-                // value={tag.id}
                 className='py-2'
             >
                 <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg'>

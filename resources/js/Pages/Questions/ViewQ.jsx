@@ -23,8 +23,8 @@ export default function View_q(props){
         comment : '',
     });
     
-    const [open, setOpen] = useState(false);
-    const clickAnswer = () => setOpen((prev) => !prev);
+    const [isOpen, setIsOpen] = useState(false);
+    const clickAnswer = () => setIsOpen((prev) => !prev);
     
     const comments = props.comments.map((comment)=>
         <div className='py-4'>
@@ -66,7 +66,7 @@ export default function View_q(props){
                     {props.auth.user != null && props.auth.user.id == comment.user_id &&(
                         <div className="py-2">
                             <Link href={route('edit_c', comment.id)}>
-                                <NormalButton >編集</NormalButton>
+                                <NormalButton>編集</NormalButton>
                             </Link>
                         </div>
                     )}
@@ -127,27 +127,29 @@ export default function View_q(props){
         <DualLayout 
             logined={props.auth.user != null}
             auth={props.auth}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">{question.title}</h2>}
+            header={
+                <div>
+                    <h2 className="font-semibold text-2xl text-gray-800 leading-tight">{question.title}</h2>
+                    <div className='pl-3 pt-2 text-sm flex'>
+                        <div>
+                            {question.level_hasmany_avg_level ?
+                                <div>難易度(全ユーザ平均)：{Math.round(question.level_hasmany_avg_level * 100) / 100}</div> :
+                                <div>難易度(全ユーザ平均)：未評価</div>
+                            }
+                        </div>
+                        
+                        <div className='pl-5'>
+                            いいね数：{ question.g4q_hasmany_count }
+                        </div>
+                    </div>
+                </div>
+            }
         >
             <div onClick={()=>(console.log(data))}>Debag</div>
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className='p-4'>
-                        
-                        <div className='flex'>
-                            <div>
-                                {question.level_hasmany_avg_level ?
-                                    <div>難易度(全ユーザ平均)：{Math.round(question.level_hasmany_avg_level * 100) / 100}</div> :
-                                    <div>難易度(全ユーザ平均)：未評価</div>
-                                }
-                            </div>
-                            
-                            <div className='pl-5'>
-                                いいね数：{ question.g4q_hasmany_count }
-                            </div>
-                        </div>
-                        
                         
                         {/*フラグ管理*/}
                         { props.auth.user != null && props.auth.user.id != question.user.id && (
@@ -176,20 +178,19 @@ export default function View_q(props){
                         )}
                         
                         {/*問題内容*/}
-                        <div className="p-4">
+                        <div className="py-2">
                             <div>
-                                問題：
-                                <br/>
-                                { question.body }
+                                <div className='text-base'>問題：</div>
+                                <div className='pt-2'>{ question.body }</div>
                             </div>
                         
                         
                         {/*答え*/}
                             <div className='pt-4'>
                                 <Collapse
-                                    opened_label={'答え：隠す'}
-                                    closed_label={'答え：見る'}
-                                    opened={open}
+                                    opened_label={'答えを隠す'}
+                                    closed_label={'答えを見る'}
+                                    opened={isOpen}
                                     contents={question.answer}
                                     onClick={clickAnswer}
                                     width={'w-20'}
