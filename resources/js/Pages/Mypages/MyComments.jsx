@@ -2,7 +2,6 @@ import DualLayout from '@/Layouts/DualLayout';
 import { useForm } from '@inertiajs/inertia-react';
 import { useState } from 'react';
 import NormalButton from '@/Components/NormalButton';
-import DeleteForm from '@/Components/DeleteForm'
 import Sort from '@/Components/Sort';
 import Pagination from '@/Components/PaginateByFront';
 
@@ -23,10 +22,10 @@ export default function MyCommnets(props){
     
     if(questionMode){
         views = _questions.slice( (page - 1) * 10, (page * 10) );
-        limit = Math.floor(_comments.length / 20) + 1;
+        limit = Math.ceil(_comments.length / 20);
     }else{
         views = sortedComments.slice( (page - 1) * 20, (page * 20) );
-        limit = Math.floor(_questions.length / 10) + 1;
+        limit = Math.ceil(_questions.length / 10);
     }
     
     const clickPage = (p)=>{
