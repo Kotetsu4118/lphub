@@ -52,7 +52,6 @@ export default function Home(props) {
                 </div>
             </div>
             
-            <Pagination data={props.questions} />
         </DualLayout>
         
         

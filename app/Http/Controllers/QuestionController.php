@@ -32,7 +32,7 @@ class QuestionController extends Controller
             
         }
         
-        $questions = $questions->with(['user', 'tag'])->orderBy('updated_at', 'DESC')->paginate(20);
+        $questions = $questions->with(['user', 'tag'])->orderBy('updated_at', 'DESC')->get();
 
         return Inertia::render('Questions/Home', [
             'questions'=>$questions,
@@ -207,9 +207,9 @@ class QuestionController extends Controller
     // 完了した問題
     public function my_completes(){
         $user = Auth::user();
-        $questions = $user->complete_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+        $questions = $user->complete_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withCount('comment')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
-            }])->orderBy('updated_at', 'DESC')->paginate(20);
+            }])->orderBy('updated_at', 'DESC')->get();
         
         return Inertia::render('Mypages/MyCompletes', [
             'questions'=>$questions,
@@ -231,7 +231,7 @@ class QuestionController extends Controller
         $user = Auth::user();
         $questions = $user->later_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
-            }])->orderBy('updated_at', 'DESC')->paginate(20);
+            }])->orderBy('updated_at', 'DESC')->get();
             
         
         return Inertia::render('Mypages/MyLaters', [
@@ -254,7 +254,7 @@ class QuestionController extends Controller
         $user = Auth::user();
         $questions = $user->question()->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
-            }])->orderBy('updated_at', 'DESC')->paginate(20);
+            }])->orderBy('updated_at', 'DESC')->get();
         
         return Inertia::render('Mypages/MyCreates')->with([
             'questions'=>$questions,
@@ -265,7 +265,9 @@ class QuestionController extends Controller
     // フラグ選択削除
     // 作成した問題
     public function delete_creates(Request $request, Question $question){
-        $question->whereIn('id', $request->checked)->delete();
+        $question->whereIn('id', $request->checked)->each(function ($q){
+                $q->delete();
+            });
         
         return redirect(route('my_creates'));
     }
@@ -273,29 +275,18 @@ class QuestionController extends Controller
     // コメント一覧
     public function my_comments(Question $question){
         $user = Auth::user();
-        $comments = $user->comment()->withCount('g4c_hasmany')
-            // ->withExists(['g4c_hasmany'=> function ($q){
-            //     $q->where('user_id', Auth::user()->id);}])
-            ->orderby('question_id')->get();
+        $comments = $user->comment()->withCount('g4c_hasmany as g4c')
+            ->orderby('created_at')->get();
         
+        $Q_comments=$user->comment()->withCount('g4c_hasmany as g4c')
+            ->orderby('question_id')->orderby('created_at')->get()->groupby('question_id')->toArray();
         
-        // $comment_group = $comments->groupby('question_id')->toArray();
-        
-        
-        // $questions = [];
-        // foreach($comment_group as $group){
-        //     array_push($questions, $question->where('id', $group[0]['question_id'])->get()->toArray()  );
-        // }
-        
-        
-        $questions = $question->with(['comment'=>function($c){$c->where('user_id', Auth::user()->id);}]);
-        $questions->whereHas('comment')->orderby('updated_at', 'DESC')->get();
-
+        $questions = $question->whereIn('id', array_keys($Q_comments))->orderby('title')->get();
 
         return Inertia::render('Mypages/MyComments', [
-            // 'comment_group'=>$comment_group,
             'questions'=>$questions,
-            'comments'=>$comments
+            'comments'=>$comments,
+            'Q_comments'=>$Q_comments,
         ]);
     }
     
