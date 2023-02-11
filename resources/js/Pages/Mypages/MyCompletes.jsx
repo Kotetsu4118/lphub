@@ -2,7 +2,7 @@ import { useForm } from '@inertiajs/inertia-react';
 import { useState } from 'react';
 import DualLayout from '@/Layouts/DualLayout';
 import NormalButton from '@/Components/NormalButton';
-import MyPageQuestions from '@/Pages/Mypages/MypageComponents/MyPageQuestions';
+import QuestionsLayout from '@/Components/QuestionsLayout';
 import Pagination from '@/Components/PaginateByFront';
 
 export default function MyCompletes(props){
@@ -13,7 +13,6 @@ export default function MyCompletes(props){
     
     const questions = props.questions;
     const _languages = props.languages;
-    const limit = Math.floor(questions.length / 20) + 1;
     
     const [checkMode, setCheckMode] = useState(false);
     const [language_id, setLanguage_id] = useState('all');
@@ -63,6 +62,7 @@ export default function MyCompletes(props){
         views.reverse();
     }
     
+    const limit = Math.ceil(views.length / 20);
     
     const clickQuestion = (id)=>{
         get(route('view_q', id));
@@ -152,7 +152,7 @@ export default function MyCompletes(props){
             }
         >
          
-            <MyPageQuestions
+            <QuestionsLayout
                 checkMode={checkMode}
                 checkAll={checkAll}
                 releaseAll={releaseAll}
@@ -172,7 +172,6 @@ export default function MyCompletes(props){
                 clickQuestion={clickQuestion}
                 language_id={language_id}
                 isNull={questions[0] == null}
-                // isNoViews={views[0] == null}
                 nullMessage={'「完了した」問題がありません'}
                 noViewsMessage={'選択した言語の問題はありません'}
                 

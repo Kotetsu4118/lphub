@@ -2,18 +2,17 @@ import { useForm } from '@inertiajs/inertia-react';
 import { useState } from 'react';
 import DualLayout from '@/Layouts/DualLayout';
 import NormalButton from '@/Components/NormalButton';
-import MyPageQuestions from '@/Pages/Mypages/MypageComponents/MyPageQuestions';
+import QuestionsLayout from '@/Components/QuestionsLayout';
 import Pagination from '@/Components/PaginateByFront';
 
 export default function MyCreates(props){
     
-    const { data, setData, get, delete:destroy, errors, processing, reset, transform } = useForm({
+    const { data, setData, get, delete:destroy, processing, reset, } = useForm({
         checked : new Set(),
     });
     
     const questions = props.questions;
     const _languages = props.languages;
-    const limit = Math.floor(questions.length / 20) + 1;
     
     const [checkMode, setCheckMode] = useState(false);
     const [language_id, setLanguage_id] = useState('all');
@@ -64,6 +63,7 @@ export default function MyCreates(props){
         views.reverse();
     }
     
+    const limit = Math.ceil(views.length / 20);
     
     const clickQuestion = (id)=>{
         get(route('view_q', id));
@@ -153,8 +153,8 @@ export default function MyCreates(props){
             }
         >
         <div onClick={()=>(console.log(questions))}>questionsを見る</div>
-
-            <MyPageQuestions
+        
+            <QuestionsLayout
                 checkMode={checkMode}
                 checkAll={checkAll}
                 releaseAll={releaseAll}

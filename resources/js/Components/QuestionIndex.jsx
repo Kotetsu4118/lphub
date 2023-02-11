@@ -49,6 +49,10 @@ export default function QuestionIndex({
                                     <div className='py-2'>
                                         いいね数：{question.g4q_hasmany_count}
                                     </div>
+                                    
+                                    <div className='py-2'>
+                                        コメント数：{question.comment_count}
+                                    </div>
                                     <div className='py-2'>
                                     
                                         {question.level_hasmany_avg_level ?

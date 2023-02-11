@@ -23,7 +23,7 @@ class QuestionController extends Controller
     public function home(Question $question, Language $languages, Tag $tags, Question_level $question_levels){
         // 'status' => session('status'), いるかどうかわからん
 
-        $questions = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany');
+        $questions = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withCount('comment');
         
         if(Auth::user()){
             $questions = $questions->withExists(['g4q_hasmany'=> function ($q){
@@ -229,7 +229,7 @@ class QuestionController extends Controller
     // 後で解く問題
     public function my_laters(){
         $user = Auth::user();
-        $questions = $user->later_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+        $questions = $user->later_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('comment')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
             }])->orderBy('updated_at', 'DESC')->get();
             
@@ -252,7 +252,7 @@ class QuestionController extends Controller
     // 作成した問題
     public function my_creates(){
         $user = Auth::user();
-        $questions = $user->question()->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
+        $questions = $user->question()->with('tag')->withAvg('level_hasmany', 'level')->withCount('comment')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
             }])->orderBy('updated_at', 'DESC')->get();
         

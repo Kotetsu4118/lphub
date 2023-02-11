@@ -2,7 +2,7 @@ import { useForm } from '@inertiajs/inertia-react';
 import { useState } from 'react';
 import DualLayout from '@/Layouts/DualLayout';
 import NormalButton from '@/Components/NormalButton';
-import MyPageQuestions from '@/Pages/Mypages/MypageComponents/MyPageQuestions';
+import QuestionsLayout from '@/Components/QuestionsLayout';
 import Pagination from '@/Components/PaginateByFront';
 
 
@@ -14,7 +14,6 @@ export default function MyLaters(props){
     
     const questions = props.questions;
     const _languages = props.languages;
-    const limit = Math.floor(questions.length / 20) + 1;
     
     const [checkMode, setCheckMode] = useState(false);
     const [language_id, setLanguage_id] = useState('all');
@@ -54,7 +53,6 @@ export default function MyLaters(props){
     };
     
     
-    
     views.sort((a,b)=>{
         return a[sorted] < b[sorted] ? -1 : 1;
     });
@@ -64,6 +62,7 @@ export default function MyLaters(props){
         views.reverse();
     }
     
+    const limit = Math.ceil(views.length / 20);
     
     const clickQuestion = (id)=>{
         get(route('view_q', id));
@@ -154,7 +153,7 @@ export default function MyLaters(props){
             }
         >
          
-            <MyPageQuestions
+            <QuestionsLayout
                 checkMode={checkMode}
                 checkAll={checkAll}
                 releaseAll={releaseAll}

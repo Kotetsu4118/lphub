@@ -112,8 +112,6 @@ export default function EditQ(props) {
             auth={props.auth}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">問題の編集：{question.title}</h2>}
         >
-        <div onClick={()=>(console.log(data))}>Debag</div>
-        <div onClick={()=>(console.log(props.checked_tag))}>props.checked_tag</div>
 
             <QuestionForm
                 languages={_languages}
