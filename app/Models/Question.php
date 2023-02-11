@@ -88,16 +88,15 @@ class Question extends Model
         
         static::deleting(function ($question) {
             DB::transaction(function () use (&$question) {
-            $question->complete_flag()->detach();
-            $question->later_flag()->detach();
-            $question->level_belongs2many()->detach();
-            $question->g4q_belongs2many()->detach();
-            $question->comment()->each(function ($comment){
-                $comment->delete();
-            });
-            $question->tag()->detach();
+                $question->complete_flag()->detach();
+                $question->later_flag()->detach();
+                $question->level_belongs2many()->detach();
+                $question->g4q_belongs2many()->detach();
+                $question->comment()->each(function ($comment){
+                    $comment->delete();
+                });
+                $question->tag()->detach();
             
-            // $question->g4c_belongs2many()->detach();
             });
         });
     }
