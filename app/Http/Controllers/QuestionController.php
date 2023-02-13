@@ -209,11 +209,12 @@ class QuestionController extends Controller
         $user = Auth::user();
         $questions = $user->complete_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withCount('comment')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
-            }])->orderBy('updated_at', 'DESC')->get();
+            }])->get();
         
-        return Inertia::render('Mypages/MyCompletes', [
+        return Inertia::render('Mypages/MyPageQuestions', [
             'questions'=>$questions,
             'languages'=> DB::table('languages')->get(),
+            'status'=>'completes',
         ]);
     }
     
@@ -231,12 +232,13 @@ class QuestionController extends Controller
         $user = Auth::user();
         $questions = $user->later_flag()->with('user')->with('tag')->withAvg('level_hasmany', 'level')->withCount('comment')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
-            }])->orderBy('updated_at', 'DESC')->get();
+            }])->get();
             
         
-        return Inertia::render('Mypages/MyLaters', [
+        return Inertia::render('Mypages/MyPageQuestions', [
             'questions'=>$questions,
             'languages'=> DB::table('languages')->get(),
+            'status'=>'laters',
         ]);
     }
     
@@ -254,11 +256,12 @@ class QuestionController extends Controller
         $user = Auth::user();
         $questions = $user->question()->with('tag')->withAvg('level_hasmany', 'level')->withCount('comment')->withCount('g4q_hasmany')->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
-            }])->orderBy('updated_at', 'DESC')->get();
+            }])->get();
         
-        return Inertia::render('Mypages/MyCreates')->with([
+        return Inertia::render('Mypages/MyPageQuestions')->with([
             'questions'=>$questions,
             'languages'=> DB::table('languages')->get(),
+            'status'=>'creates',
         ]);
     }
     

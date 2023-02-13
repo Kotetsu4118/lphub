@@ -47,6 +47,7 @@ class CommentController extends Controller
     
     public function delete_c(Comment $comment, Request $request){
         $comment->whereIn('id', $request->checked)->delete();
+        return redirect(route('my_comments'));
     }
     
     // コメントへのいいね管理

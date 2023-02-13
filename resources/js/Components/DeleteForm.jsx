@@ -5,7 +5,11 @@ import Modal from '@/Components/Modal';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 
-export default function DeleteForm({ needConfirm=true, onDengerButton, showModal, onClose, onSubmit, message, text_id, input_value, label_value, processing, handleChange, errors, closeModal}){
+export default function DeleteForm({
+    needConfirm=true, onDengerButton, showModal, onClose, onSubmit, message, text_id, input_value, label_value, processing,
+    handleChange, errors, closeModal, confirmContents,
+    
+}){
     return(
         <div>
             <DangerButton onClick={onDengerButton}>削除</DangerButton>
@@ -15,6 +19,21 @@ export default function DeleteForm({ needConfirm=true, onDengerButton, showModal
                     <h2 className="text-lg font-medium text-gray-900">
                         {message}
                     </h2>
+
+                    { confirmContents!=null && confirmContents.size > 0 && 
+                    <div>
+                        <hr/>
+                        <div className='overflow-y-auto overflow-x-hidden px-2 h-44'>
+                            {
+                                Array.from(confirmContents).map((content)=>
+                                    <div calssName='py-2'>
+                                        {content}
+                                    </div>
+                                )
+                            }
+                        </div>
+                    </div>
+                    }
                     
                     { needConfirm && (
                     <div>

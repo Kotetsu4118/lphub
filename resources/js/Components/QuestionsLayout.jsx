@@ -7,7 +7,8 @@ import Sort from '@/Components/Sort';
 export default function QuestionsLayout({
     checkMode, checkAll, releaseAll, onDengerButton, showModal, closeModal, needConfirm, onSubmitDeletion, processing, deletionMessage,
     questions, languages, changeLang, checked, clickCheckBox, clickQuestion, language_id, nullMessage, noViewsMessage, isNull,
-    selectSort, desc, changeOrder, needUser, isHome=false, good, later, complete, isLogin, hiddenMine, changeHiddenMine,
+    selectSort, desc, changeOrder, needUser, isHome=false, good, later, complete, isLogin, hiddenMine, changeHiddenMine, errors,
+    confirmContents,
 }){
     
     return(
@@ -52,6 +53,9 @@ export default function QuestionsLayout({
                                     closeModal={closeModal}
                                     message={deletionMessage}
                                     needConfirm={needConfirm}
+                                    errors={errors}
+                                    confirmContents={confirmContents}
+                                    
                                 />
                             </div>
                             }
@@ -91,7 +95,7 @@ export default function QuestionsLayout({
                                                 <option value='created_at' className='text-xs'>作成日時</option>
                                                 <option value='updated_at' className='text-xs'>更新日時</option>
                                                 <option value='g4q_hasmany_count' className='text-xs'>いいね数</option>
-                                                <option value='comments' className='text-xs'>コメント数</option>
+                                                <option value='comment_count' className='text-xs'>コメント数</option>
                                                 <option value='level_hasmany_avg_level' className='text-xs'>難易度</option>
                                             </>
                                         }
