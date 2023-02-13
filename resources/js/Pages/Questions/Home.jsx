@@ -138,43 +138,46 @@ export default function Home(props) {
                 </div>
             }
         >
-
-            <QuestionsLayout
-                checkMode={checkMode}
-                checkAll={checkAll}
-                releaseAll={releaseAll}
-                needConfirm={false}
-                processing={processing}
-                deletionMessage={'選択した問題を「完了した」から削除しますか？'}
-                isHome={true}
-                isLogin={props.auth.user != null}
-                hiddenMine={hiddenMine}
-                changeHiddenMine={changeHiddenMine}
+            <div className='pb-10'>
+                <QuestionsLayout
+                    checkMode={checkMode}
+                    checkAll={checkAll}
+                    releaseAll={releaseAll}
+                    needConfirm={false}
+                    processing={processing}
+                    deletionMessage={'選択した問題を「完了した」から削除しますか？'}
+                    isHome={true}
+                    isLogin={props.auth.user != null}
+                    hiddenMine={hiddenMine}
+                    changeHiddenMine={changeHiddenMine}
+                    
+                    questions={_views.slice( (page - 1) * 20, (page * 20) )}
+                    languages={_languages}
+                    changeLang={changeLang}
+                    checked={data.checked}
+                    clickCheckBox={clickCheckBox}
+                    clickQuestion={clickQuestion}
+                    language_id={language_id}
+                    isNull={questions[0] == null}
+                    nullMessage={'「完了した」問題がありません'}
+                    noViewsMessage={'選択した言語の問題はありません'}
+                    
+                    selectSort={selectSort}
+                    desc={desc}
+                    changeOrder={changeOrder}
                 
-                questions={_views.slice( (page - 1) * 20, (page * 20) )}
-                languages={_languages}
-                changeLang={changeLang}
-                checked={data.checked}
-                clickCheckBox={clickCheckBox}
-                clickQuestion={clickQuestion}
-                language_id={language_id}
-                isNull={questions[0] == null}
-                nullMessage={'「完了した」問題がありません'}
-                noViewsMessage={'選択した言語の問題はありません'}
-                
-                selectSort={selectSort}
-                desc={desc}
-                changeOrder={changeOrder}
-            
-            />
+                />
+            </div>
             
             { !(questions[0] == null || views[0] == null) &&
-            <Pagination
-                page={page}
-                limit={limit}
-                clickPage={clickPage}
-                footer={true}
-            />
+            <div className='bottom-0 fixed w-full'>
+                <Pagination
+                    page={page}
+                    limit={limit}
+                    clickPage={clickPage}
+                    footer={true}
+                />
+            </div>
             }
         </DualLayout>
     );

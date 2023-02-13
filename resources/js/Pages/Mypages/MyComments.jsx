@@ -4,6 +4,7 @@ import { useState } from 'react';
 import NormalButton from '@/Components/NormalButton';
 import Sort from '@/Components/Sort';
 import Pagination from '@/Components/PaginateByFront';
+import DeleteForm from '@/Components/DeleteForm';
 
 export default function MyCommnets(props){
     const _questions = props.questions;
@@ -134,8 +135,9 @@ export default function MyCommnets(props){
         destroy(route('delete_c'), {
             preserveScroll: true,
             onSuccess: () => closeModal(),
-            onFinish: () => (reset(), setCheckMode(false)),
+            // onFinish: () => (reset(), ),
         });
+        setCheckMode(false);
         data.checked = new Set();
     };
     
@@ -191,8 +193,6 @@ export default function MyCommnets(props){
             </div>
             }
         
-            <div onClick={()=>(console.log(c_pages))}>c_pagesを見る</div>
-            <div onClick={()=>(console.log(q_pages))}>q_pagesを見る</div>
             <div onClick={()=>(console.log(views))}>viewsを見る</div>
 
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
@@ -214,7 +214,7 @@ export default function MyCommnets(props){
                 </div>
                 
                 
-                <div>
+                <div className='pb-10'>
                     { !questionMode ?
                         views.map((comment)=>
                             <div className='py-4 flex'>
@@ -239,7 +239,7 @@ export default function MyCommnets(props){
                                             </div>
                                             <div className='text-xs flex py-2'>
                                                 <div>
-                                                    いいね数：{comment.g4c_hasmany_count}
+                                                    いいね数：{comment.g4c}
                                                 </div>
                                                 <div className='pl-3'>
                                                     作成日時：{comment.created_at}
@@ -329,12 +329,14 @@ export default function MyCommnets(props){
                 </div>
             </div>
             
-            <Pagination
-                page={page}
-                limit={limit}
-                clickPage={clickPage}
-                footer={true}
-            />
+            <div className='bottom-0 fixed w-full'>
+                <Pagination
+                    page={page}
+                    limit={limit}
+                    clickPage={clickPage}
+                    footer={true}
+                />
+            </div>
         </div>)
             :
             <div className='text-lg text-center py-4'>投稿したコメントがありません</div>

@@ -1,27 +1,37 @@
 import DualLayout from '@/Layouts/DualLayout';
-import { Link, useForm } from '@inertiajs/inertia-react';
+import { Link } from '@inertiajs/inertia-react';
 import NormalButton from '@/Components/NormalButton';
 import SelectLang from '@/Components/SelectLang';
+import Pagination from '@/Components/PaginateByFront';
+import { useState } from 'react';
 
 export default function TagIndex(props){
     
     const _tags = props.tags;
     const _languages = props.languages;
 
-    const { data, setData } = useForm({
-        language_id : 'all',
-    });
+    const [language_id, setLanguage_id] = useState('all');
+    const [page, setPage] = useState(1);
     
     const changeLang = (event)=>{
-        setData('language_id', event.target.value);
-        console.log(data.language_id);
+        setLanguage_id(event.target.value);
+        console.log(language_id);
     };
     
-    const tags = _tags.map((tag)=>
+    const clickPage = (p)=>{
+        setPage(p);
+    };
+    
+    let views = _tags;
+    if(language_id != 'all'){
+        views = views.filter((tag)=>tag.language_id == language_id);
+    }
+    
+    const limit = Math.ceil(views.length / 20);
+    
+    const tags = views.slice( (page - 1) * 20, (page * 20) ).map((tag)=>
         <div>
-            <div style={{ display: data.language_id == 'all' || data.language_id == tag.language_id ? '' : 'none' }} 
-                className='py-2'
-            >
+            <div className='py-2'>
                 <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg'>
                     <div className='py-4 flex justify-between'>
                         <div vertical-align='middle' className='px-2'>
@@ -63,15 +73,31 @@ export default function TagIndex(props){
                         languages={_languages}
                         changeLang={changeLang}
                         init={'all'}
-                        selected={data.language_id}
+                        selected={language_id}
                     />
                 </div>
                 
-                <div>
+                { views[0] != null ?
+                <div className='pb-10'>
                     {tags}
                 </div>
-                
+                :
+                <div align='center'>
+                    選択した言語のタグはありません
+                </div>
+                }
             </div>
+            
+            { views[0] != null &&
+            <div className='bottom-0 fixed w-full'>
+                <Pagination
+                page={page}
+                limit={limit}
+                clickPage={clickPage}
+                footer={true}
+                />
+            </div>
+            }
         </DualLayout>
     );
 }

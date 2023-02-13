@@ -131,23 +131,23 @@ export default function EditQ(props) {
             />
             
             <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
-            <div className='py-4'>
-                <DeleteForm
-                    onDengerButton={confirmCommentDeletion}
-                    showModal={confirmingCommentDeletion}
-                    onClose={closeModal}
-                    onSubmit={deleteComment}
-                    text_id={'confirm'}
-                    input_value={data.confirm}
-                    label_value={'確認'}
-                    processing={processing}
-                    handleChange={onhandleChange}
-                    errors={errors}
-                    closeModal={closeModal}
-                    message={'この問題を削除しますか?'}
-                />
-            
-            </div>
+                <div className='py-4'>
+                    <DeleteForm
+                        onDengerButton={confirmCommentDeletion}
+                        showModal={confirmingCommentDeletion}
+                        onClose={closeModal}
+                        onSubmit={deleteComment}
+                        text_id={'confirm'}
+                        input_value={data.confirm}
+                        label_value={'確認'}
+                        processing={processing}
+                        handleChange={onhandleChange}
+                        errors={errors}
+                        closeModal={closeModal}
+                        message={'この問題を削除しますか?'}
+                    />
+                
+                </div>
             </div>
         
         </DualLayout>
