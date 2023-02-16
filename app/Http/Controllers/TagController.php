@@ -51,26 +51,28 @@ class TagController extends Controller
         return back()->withInput();
     }
     
-    public function home_t(Tag $tag){
+    public function home_t(Tag $tag, Language $languages){
         
-        $questions = $tag->question()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany');
+        $questions = $tag->question()->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withCount('comment');
         
         if(Auth::user()){
             $questions = $questions->withExists(['g4q_hasmany'=> function ($q){
                 $q->where('user_id', Auth::user()->id);
             }]);
+            
         }
         
-        $questions = $questions->orderBy('updated_at', 'DESC')->paginate(20);
+        $questions = $questions->with(['user', 'tag'])->get();
         
         
         // $questions = $tag->question()->withAvg('level_hasmany', 'level')->orderBy('updated_at', 'DESC')->paginate(20);
         
         
-        return view('tags/home_t')->with([
+        return Inertia::render('Questions/HomeByTag', [
             'questions'=>$questions,
             'tag_name'=>$tag->name,
-            'tags'=>$tag->orderby('name')->get(),
+            'tags'=>$tag->get(),
+            'languages'=>$languages->get(),
             
         ]);
     }

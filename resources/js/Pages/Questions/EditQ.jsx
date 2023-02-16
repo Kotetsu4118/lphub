@@ -67,6 +67,7 @@ export default function EditQ(props) {
     
     
     const onhandleChange = (event)=>{
+        event.preventDefault();
         setData(event.target.id, event.target.value);  
     };
     
@@ -94,7 +95,7 @@ export default function EditQ(props) {
         reset();
     };
     
-     const deleteComment = (e) => {
+     const deleteQuestion = (e) => {
         e.preventDefault();
 
         destroy(route('delete_q', question.id), {
@@ -136,7 +137,7 @@ export default function EditQ(props) {
                         onDengerButton={confirmCommentDeletion}
                         showModal={confirmingCommentDeletion}
                         onClose={closeModal}
-                        onSubmit={deleteComment}
+                        onSubmit={deleteQuestion}
                         text_id={'confirm'}
                         input_value={data.confirm}
                         label_value={'確認'}

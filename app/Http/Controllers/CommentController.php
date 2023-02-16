@@ -32,9 +32,9 @@ class CommentController extends Controller
     public function update_c(CommentRequest $request, Comment $comment){
         $comment->body = $request->comment;
         $comment->save();
-        // $id = $comment->question()->get()[0]->id;
-        $id = $comment->question()->id;
-        dd($id);
+        $id = $comment->question()->get()[0]->id;
+        // $id = $comment->question()->id;
+        // dd($id);
         
         return redirect('/questions/'.$id);
     }

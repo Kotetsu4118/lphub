@@ -33,14 +33,14 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                     
                     <InputLabel for="title" value="タイトル" />
                     <TextInput
-                            id="title"
-                            className="mt-1 block w-full"
-                            value={title_value}
-                            handleChange={(e) => onhandleChange(e)}
-                            // required
-                            isFocused
-                            
-                            // autoComplete="name"
+                        id="title"
+                        className="mt-1 block w-full"
+                        value={title_value}
+                        handleChange={(e) => onhandleChange(e)}
+                        // required
+                        isFocused
+                        
+                        // autoComplete="name"
                     />
                     
                     <InputError className="mt-2" message={errors.title} />
@@ -56,13 +56,12 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                             className="mt-1 block w-full h-44"
                             value={body_value}
                             handleChange={(e) => onhandleChange(e)}
-                            required
-                            name='question[body]'
+                            // required
                             // autoComplete="name"
                     />
-                    {/*
-                    <InputError className="mt-2" message={errors.question.body} />
-                    */}    
+                    
+                    <InputError className="mt-2" message={errors.body} />
+                        
                 </div>
                 
                 <div class='py-4'>
@@ -73,13 +72,10 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                             className="mt-1 block w-full h-44"
                             value={answer_value}
                             handleChange={(e) => onhandleChange(e)}
-                            required
-                            name='question[answer]'
+                            // required
                             // autoComplete="name"
                     />
-                    {/*
-                    <InputError className="mt-2" message={errors.question.answer} />
-                    */}    
+                    <InputError className="mt-2" message={errors.answer} />
                 </div>
                 
                 {/*タグ*/}
@@ -110,7 +106,7 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                 </div>
                 <div className='pl-5'>
                     <Link href={cancel_link}>
-                        <PrimaryButton processing={processing}>キャンセル</PrimaryButton>
+                        <NormalButton processing={processing}>キャンセル</NormalButton>
                     </Link>
                 </div>
             </div>

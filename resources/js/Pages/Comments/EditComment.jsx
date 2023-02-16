@@ -78,7 +78,8 @@ export default function EditComment(props){
                     processing={processing}
                     clickReset={clickReset}
                     submit={submit}
-                    cancel_link={route('home')}
+                    cancel_link={route('back')}
+                    submitValue={'保存'}
                 />
                 
                 <div className='py-4'>
@@ -95,6 +96,7 @@ export default function EditComment(props){
                         errors={errors}
                         closeModal={closeModal}
                         message={'このコメントを削除しますか?'}
+                        
                     />
                 
                 </div>

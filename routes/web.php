@@ -44,6 +44,8 @@ Route::controller(QuestionController::class)->middleware(['auth'])->group(functi
 
 
 Route::get('/', [QuestionController::class, 'home'])->name('home');
+Route::get('/practice', [QuestionController::class, 'practice'])->name('practice');
+Route::get('/back', [QuestionController::class, 'back'])->name('back');
 Route::get('/home_t/{tag}', [TagController::class, 'home_t'])->name('home_t');
 Route::get('home_search/{search_word}', [QuestionController::class, 'home_search'])->name('home_search');
 Route::get('/questions/{question}', [QuestionController::class, 'view_q'])->name('view_q');
@@ -92,6 +94,7 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    // Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

@@ -4,6 +4,7 @@ import DualLayout from '@/Layouts/DualLayout';
 import NormalButton from '@/Components/NormalButton';
 import QuestionsLayout from '@/Components/QuestionsLayout';
 import Pagination from '@/Components/PaginateByFront';
+import DeleteForm from '@/Components/DeleteForm';
 
 export default function MyPageQuestions(props){
     const questions = props.questions;
@@ -20,7 +21,6 @@ export default function MyPageQuestions(props){
     const [checkMode, setCheckMode] = useState(false);
     const [language_id, setLanguage_id] = useState('all');
     const [sorted, setSorted] = useState('created_at');
-    // const [views, setViews] = useState(questions);
     const [page, setPage] = useState(1);
     const [desc, setDesc] = useState(true);
     const [confirmContents, setConfirmContents] = useState(new Set);
@@ -47,8 +47,6 @@ export default function MyPageQuestions(props){
     const changeLang = (event)=>{
         setLanguage_id(event.target.value);
         reset();
-        
-        
     };
     
     if(language_id == 'all' ){
@@ -58,7 +56,7 @@ export default function MyPageQuestions(props){
     }
     
     
-    
+    // 並べ替え
     views.sort((a,b)=>{
         if(desc){
             if(a[sorted] > b[sorted]) return -1;
@@ -204,19 +202,45 @@ export default function MyPageQuestions(props){
         >
             <div onClick={()=>(console.log(confirmContents))}>contentsを見る</div>
             <div onClick={()=>(console.log(data.checked))}>checkedを見る</div>
-
+            { checkMode && questions[0] != null &&
+                    <div className='bg-white bg-opacity-75 h-20 inlin-flex'>
+                        <div className='flex py-4 justify-between'>
+                            <div className='flex'>
+                                <div className='px-2'>
+                                    <NormalButton onClick={checkAll} >全選択</NormalButton>
+                                </div>
+                                <div className='px-2'>
+                                    <NormalButton onClick={releaseAll}>選択解除</NormalButton>
+                                </div>
+                            </div>
+                            
+                            
+                            <div align='right' className='px-2'>
+                                <DeleteForm
+                                    onDengerButton={confirmQuestionDeletion}
+                                    showModal={confirmingDetach}
+                                    onClose={closeModal}
+                                    onSubmit={Delete}
+                                    processing={processing}
+                                    closeModal={closeModal}
+                                    message={'選択した問題を' + Mrssages[status] + 'から削除しますか？'}
+                                    needConfirm={status == 'creates'}
+                                    errors={errors}
+                                    confirmContents={confirmContents}
+                                    
+                                />
+                            </div>
+                        </div>
+                    </div>
+                }
+            
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
             <div className='pb-10'>
                 <QuestionsLayout
                     checkMode={checkMode}
                     checkAll={checkAll}
                     releaseAll={releaseAll}
-                    onDengerButton={confirmQuestionDeletion}
-                    showModal={confirmingDetach}
-                    closeModal={closeModal}
-                    needConfirm={status == 'creates'}
-                    onSubmitDeletion={Delete}
                     processing={processing}
-                    deletionMessage={'選択した問題を' + Mrssages[status] + 'から削除しますか？'}
                     
                     questions={views.slice( (page - 1) * 20, (page * 20) )}
                     languages={_languages}
@@ -238,6 +262,7 @@ export default function MyPageQuestions(props){
                     errors={errors}
                 
                 />
+            </div>
             </div>
             
             { !(questions[0] == null || views[0] == null) &&

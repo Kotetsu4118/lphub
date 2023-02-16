@@ -7,49 +7,29 @@ import QuestionsLayout from '@/Components/QuestionsLayout';
 import Pagination from '@/Components/PaginateByFront';
 import TextInput from '@/Components/TextInput';
 
-export default function Home(props) {
+export default function HomeByTag(props) {
     
     const { data, setData, get, processing, reset, } = useForm({
-    //     searchWord : props.searchWord,
+        searchWord : props.searchWord,
     });
     
     const questions = props.questions;
     const _languages = props.languages;
+    let views = questions;
     
     const [language_id, setLanguage_id] = useState('all');
     const [sorted, setSorted] = useState('created_at');
     const [page, setPage] = useState(1);
     const [desc, setDesc] = useState(true);
     const [hiddenMine, setHiddenMine] = useState(false);
-    const [searchedQuestions, setSearchedQuestions] = useState(questions);
-    const [searchWord, setSearchWord] = useState('');
+    // const [searchWord, setSearchWord] = useState(null);
     const [searchTarget, setSearcTarget] = useState(new Set().add('title'));
-    
-    let views;
-    
-    const searchReset = ()=>{
-        setSearchWord('');
-        setSearchedQuestions(questions);
-    };
+    const [onSearch, setOnSearch] = useState(false);
     
     const changeWord = (event)=>{
-        setSearchWord(event.target.value);
+        setData('searchWord',event.target.value);
     };
     
-    // 言語選択
-    const changeLang = (event)=>{
-        setLanguage_id(event.target.value);
-        // reset();
-    };
-    
-    // 言語による絞り込み
-    if(language_id == 'all' ){
-        views = searchedQuestions;
-    }else{
-        views = searchedQuestions.filter(question=>question.language_id == language_id);
-    }
-    
-    // 検索対象の選択
     const checkSearchTarget = (value)=>{
         const prev = new Set(searchTarget);
         if(prev.has(value)){
@@ -61,25 +41,26 @@ export default function Home(props) {
     };
     
     
-    let tentativeQuestions = new Set(null);
+    // let view_title = [];
+    // let view_body = [];
+    // let view_answer = [];
     
-    const searchByTarget = (target)=>{
-        // tentativeQuestions = tentativeQuestions.concat(questions.filter(questions=>questions[target].indexOf(searchWord) > -1));
-        tentativeQuestions =  new Set([...tentativeQuestions, ...new Set(questions.filter(questions=>questions[target].indexOf(searchWord) > -1))]);
-    };
-    
-    
-    const search = ()=>{
-        console.log('ちぇすとおおおおおお');
+    // const search = ()=>{
         
-        Array.from(searchTarget).forEach(target=>
-            searchByTarget(target)
-        );
+    //     if(searchTarget.has('title')){
+    //         view_title = views.filter(q=> q.title.indexOf(searchWord) > -1);
+    //     }
         
-        setSearchedQuestions(Array.from(tentativeQuestions));
-        console.log(Array.from(tentativeQuestions));
-    };
-    
+    //     if(searchTarget.has('body')){
+    //         view_body = views.filter(q=> q.body.indexOf(searchWord) > -1);
+    //     }
+    //     if(searchTarget.has('answer')){
+    //         view_answer = views.filter(q=> q.answer.indexOf(searchWord) > -1);
+    //     }
+        
+    //     views = view_title.concat(view_body, view_answer);
+    //     setOnSearch
+    // };
     
     
     
@@ -89,21 +70,33 @@ export default function Home(props) {
     
     const changeOrder = (order)=>{
         setDesc(order);
-        // reset();
+        reset();
     };
     
     const clickPage = (p)=>{
         setPage(p);
-        // reset();
+        reset();
     };
     
     // ソート
     const selectSort = (event)=>{
         setSorted(event.target.value);
-        // reset();
+        reset();
     };
     
-    const test = [];
+    // 言語選択
+    const changeLang = (event)=>{
+        setLanguage_id(event.target.value);
+        reset();
+    };
+    
+    // 言語による絞り込み
+    if(language_id == 'all' ){
+        views = questions;
+    }else{
+        views = questions.filter(question=>question.language_id == language_id);
+    }
+    
     
     // 自分が作成した問題の排除
     if(hiddenMine){
@@ -125,8 +118,7 @@ export default function Home(props) {
     });
     
     
-    const set1 = new Set([1,2]);
-    const set2 = new Set([1,3]);
+    
     
     
     const limit = Math.ceil(views.length / 20);
@@ -142,7 +134,6 @@ export default function Home(props) {
     };
     
     
-    
     return(
         <DualLayout
             logined={props.auth.user != null}
@@ -150,13 +141,16 @@ export default function Home(props) {
             header={
                 <div className='flex justify-between'>
                     <div>
-                        <h2 className="font-semibold text-xl text-gray-800 leading-tight">Home</h2>
+                        <h2 className="font-semibold text-xl text-gray-800 leading-tight">タグ検索：{props.tag_name}</h2>
                     </div>
                 </div>
             }
         >
         
-        <div onClick={()=>(console.log(searchedQuestions))}>searchedQuestionsを見る</div>
+        <div onClick={()=>(console.log(data.searchWord))}>searchWordを見る</div>
+        <div onClick={()=>(console.log(searchTarget))}>searchTargetを見る</div>
+        <div onClick={()=>(console.log(onSearch))}>onSearchを見る</div>
+        <div onClick={()=>(console.log(views))}>viewsを見る</div>
 
         
             <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
@@ -165,37 +159,26 @@ export default function Home(props) {
                         {props.searchWord}：での検索結果
                     </div>
                 }
-                
                 {/*
                 <form onSubmit={submit} className="mt-6 space-y-6">
-                */}
                 <div className='flex'>
                     <div className='flex-1 w-auto'>
                         <TextInput
                             className="mt-1 block w-full"
-                            value={searchWord}
+                            value={data.searchWord}
                             handleChange={(e) => changeWord(e)}
                             // required
                             isFocused
                         />
                     </div>
-                    <div className='flex'>
-                        {/*
+                    <div className=''>
                         <PrimaryButton processing={processing}>検索</PrimaryButton>
-                        */}
-                        <div className='px-2'>
-                            <NormalButton onClick={()=>search()} processing={processing}>検索</NormalButton>
-                        </div>
-                        <div className=''>
-                            <NormalButton onClick={()=>searchReset()} >検索リセット</NormalButton>
-                        </div>
                     </div>
                 </div>
-                {/*
                 </form>
                 */}
                 
-                
+                {/*
                 <div className='flex text-sm pt-1'>
                     検索対象：
                     <div className='px-2' onClick={()=>checkSearchTarget('title')}>
@@ -211,7 +194,7 @@ export default function Home(props) {
                         <input type='checkbox' checked={searchTarget.has('answer')}/>
                     </div>
                 </div>
-                
+                */}
             
                 <div className='pb-10 pt-4'>
                     <QuestionsLayout

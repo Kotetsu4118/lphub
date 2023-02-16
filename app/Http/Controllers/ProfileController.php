@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
 
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Hash;
+
 class ProfileController extends Controller
 {
     /**
@@ -30,6 +35,24 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
+        
+        $file = $request->icon;
+    
+        if($file){
+            // dd($file);
+            $user_id = (string)$request->user()->id;
+            $file_name = $user_id."_icon.png";
+            
+            if($file == 'default'){
+                Storage::disk('s3')->delete('/user_icon/'.$file_name);
+                $request->user()->user_icon_path = 'https://lphub.s3.ap-northeast-1.amazonaws.com/user_icon/default_user_icon.png';
+            }else{
+                $file->storeAs('/user_icon', $file_name, 's3', 'public-read');
+                $url = Storage::disk('s3')->url('/user_icon/'.$file_name);
+                $request->user()->user_icon_path = $url;
+            }
+        
+        }
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
