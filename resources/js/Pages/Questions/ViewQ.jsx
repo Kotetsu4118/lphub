@@ -5,8 +5,9 @@ import CompleteLater from '@/Components/CompleteLater';
 import QuestionTags from '@/Components/QuestionTags';
 import Collapse from '@/Components/Collapse';
 import { Link, useForm, usePage } from '@inertiajs/inertia-react';
-import { useState } from 'react'
+import { useState } from 'react';
 import CommentForm from '@/Pages/Comments/CommentComponents/CommentForm';
+import Pagination from '@/Components/PaginateByFront';
 
 
 export default function View_q(props){
@@ -25,8 +26,15 @@ export default function View_q(props){
     
     const [isOpen, setIsOpen] = useState(false);
     const clickAnswer = () => setIsOpen((prev) => !prev);
+    const [page, setPage] = useState(1);
+    const limit = Math.ceil(props.comments.length / 10);
     
-    const comments = props.comments.map((comment)=>
+    const clickPage = (p)=>{
+        setPage(p);
+    };
+    
+    
+    const comments = props.comments.slice( (page - 1) * 10, (page * 10) ).map((comment)=>
         <div className='py-4'>
             <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg'>
                 <div className='pl-3'>
@@ -247,15 +255,25 @@ export default function View_q(props){
                 <hr className='py-4'/>
                     <div>コメント系</div>
                 
+                <div className='py-6'>
                 { comments[0] ?
-                    <div className='py-6'>
-                        {comments}
+                <div>
+                    {comments}
+                    <div className>
+                        <Pagination
+                            page={page}
+                            limit={limit}
+                            clickPage={clickPage}
+                            footer={false}
+                        />
                     </div>
+                </div>
                 :
-                    <div className='py-6'>
-                        コメントはまだありません
-                    </div>
+                <div>
+                    コメントはまだありません
+                </div>
                 }
+                </div>
                 
                 <CommentForm
                     value={data.comment}
@@ -264,6 +282,7 @@ export default function View_q(props){
                     processing={processing}
                     clickReset={resetComment}
                     submit={submit}
+                    submitValue={'送信'}
                 />
                 
             </div>

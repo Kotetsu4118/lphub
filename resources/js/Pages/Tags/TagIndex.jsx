@@ -42,7 +42,7 @@ export default function TagIndex(props){
                         <div align='right' className='px-2 flex'>
                             
                             <div>
-                                <Link>
+                                <Link href={route('home_t', tag.id)}>
                                     <NormalButton>問題を見る</NormalButton>
                                 </Link>
                             </div>

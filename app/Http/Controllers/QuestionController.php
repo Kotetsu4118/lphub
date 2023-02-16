@@ -19,8 +19,19 @@ use Illuminate\Support\Facades\DB;
 class QuestionController extends Controller
 {   
     
+    // 戻るなり
+    public function back() {
+
+    return back();
+
+    }
+    
+    public function practice(){
+        return Inertia::render('LexicalPractice');
+    }
+    
     // home
-    public function home(Question $question, Language $languages, Tag $tags, Question_level $question_levels){
+    public function home(Question $question, Language $languages, Tag $tags,){
         // 'status' => session('status'), いるかどうかわからん
 
         $questions = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withCount('comment');
@@ -32,7 +43,7 @@ class QuestionController extends Controller
             
         }
         
-        $questions = $questions->with(['user', 'tag'])->orderBy('updated_at', 'DESC')->get();
+        $questions = $questions->with(['user', 'tag'])->get();
 
         return Inertia::render('Questions/Home', [
             'questions'=>$questions,
@@ -45,8 +56,8 @@ class QuestionController extends Controller
     public function home_search(Question $questions, Language $languages, Tag $tags, Request $request){
         $query = Question::query();
         
-        $search_word = $request->search_word;
-        $spaceConversion = mb_convert_kana($search_word, 's');
+        $searchWord = $request->searchWord;
+        $spaceConversion = mb_convert_kana($searchWord, 's');
         $wordArraySearched = preg_split('/[\s,]+/', $spaceConversion, -1, PREG_SPLIT_NO_EMPTY);
         
         foreach($wordArraySearched as $word){
@@ -54,13 +65,22 @@ class QuestionController extends Controller
         }
         
         
-        $searced_questions = $query->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->orderBy('updated_at', 'DESC')->paginate(20);
+        $searced_questions = $query->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withCount('comment');
         
-        return view('questions/home_search')->with([
+        if(Auth::user()){
+            $searced_questions = $searced_questions->withExists(['g4q_hasmany'=> function ($q){
+                $q->where('user_id', Auth::user()->id);
+            }]);
+            
+        }
+        
+        $searced_questions = $searced_questions->with(['user', 'tag'])->get();
+        
+        return Inertia::render('Questions/Home', [
             'questions'=>$searced_questions,
             'languages'=>$languages->get(),
             'tags'=>$tags->orderby('name')->get(),
-            'search_word'=>$search_word
+            'searchWord'=>$searchWord
         ]);
         
     }

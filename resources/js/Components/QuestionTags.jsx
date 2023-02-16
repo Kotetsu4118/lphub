@@ -9,7 +9,7 @@ export default function QuestionTags({tags, vaild}){
             {tags.map((tag)=>
                 <div className='pl-3'>
                     { vaild ? 
-                    <Link>
+                    <Link href={route('home_t', tag.id)}>
                         ・{tag.name}
                     </Link>
                     :

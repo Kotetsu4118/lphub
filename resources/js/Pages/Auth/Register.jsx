@@ -5,6 +5,7 @@ import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Head, Link, useForm } from '@inertiajs/inertia-react';
+import { useState } from 'react';
 
 export default function Register() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -12,7 +13,31 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
+        icon : null,
     });
+    
+    const [imagePreview, setImagePreview] = useState('https://lphub.s3.ap-northeast-1.amazonaws.com/user_icon/default_user_icon.png');
+
+    const reader = new FileReader();
+    
+    const setIcon = (event)=>{
+        const file = event.target.files[0];
+        // ファイルを読み込み終わったタイミングで実行するイベントハンドラー
+        reader.onload = () => {
+            // imagePreviewに読み込み結果（データURL）を代入する
+            // imagePreviewに値を入れると<output>に画像が表示される
+            setImagePreview(reader.result);
+        };
+          
+        reader.readAsDataURL(file);
+        setData('icon', file);
+    };
+    
+    const setDefaultIcon = ()=>{
+        setData('icon','default');
+        setImagePreview('https://lphub.s3.ap-northeast-1.amazonaws.com/user_icon/default_user_icon.png');
+    };
+
 
     useEffect(() => {
         return () => {
@@ -36,7 +61,7 @@ export default function Register() {
 
             <form onSubmit={submit}>
                 <div>
-                    <InputLabel forInput="name" value="Name" />
+                    <InputLabel forInput="name" value="名前" />
 
                     <TextInput
                         id="name"
@@ -53,7 +78,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel forInput="email" value="Email" />
+                    <InputLabel forInput="email" value="メールアドレス" />
 
                     <TextInput
                         id="email"
@@ -70,7 +95,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel forInput="password" value="Password" />
+                    <InputLabel forInput="password" value="パスワード" />
 
                     <TextInput
                         id="password"
@@ -87,7 +112,7 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel forInput="password_confirmation" value="Confirm Password" />
+                    <InputLabel forInput="password_confirmation" value="パスワード（確認）" />
 
                     <TextInput
                         id="password_confirmation"
@@ -101,17 +126,24 @@ export default function Register() {
 
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
+                
+                <div className="mt-4">
+                    <InputLabel for="icon" value="アイコン" />
+                    <input id='icon' type='file' accept="image/*" onChange={(e)=>setIcon(e)}/>
+                    <img class='h-20 w-auto' src={ imagePreview }/>
+                    
+                </div>
 
                 <div className="flex items-center justify-end mt-4">
                     <Link
                         href={route('login')}
                         className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
-                        Already registered?
+                        登録済みの場合はこちら
                     </Link>
 
                     <PrimaryButton className="ml-4" processing={processing}>
-                        Register
+                        登録
                     </PrimaryButton>
                 </div>
             </form>

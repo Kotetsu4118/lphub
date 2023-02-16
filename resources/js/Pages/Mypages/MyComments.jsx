@@ -14,23 +14,27 @@ export default function MyCommnets(props){
     const [isClosed, setIsClosed] = useState(new Set());
     
     const [checkMode, setCheckMode] = useState(false);
-    const [sortedComments, setSortedComments] = useState(_comments);
     const [page, setPage] = useState(1);
     const [questionMode, setQuestionMode] = useState(false);
+    const [desc, setDesc] = useState(true);
+    const [sorted, setSorted] = useState('created_at');
     
-    let views;
+    const { data, setData, get, delete:destroy, errors, processing, reset, transform } = useForm({
+        checked : new Set(),
+    });
+    
+    let views = _comments;
     let limit;
     
-    if(questionMode){
-        views = _questions.slice( (page - 1) * 10, (page * 10) );
-        limit = Math.ceil(_comments.length / 20);
-    }else{
-        views = sortedComments.slice( (page - 1) * 20, (page * 20) );
-        limit = Math.ceil(_questions.length / 10);
-    }
+    
     
     const clickPage = (p)=>{
         setPage(p);
+    };
+    
+    const changeOrder = (order)=>{
+        setDesc(order);
+        reset();
     };
     
     // 問題の折り畳み
@@ -45,24 +49,34 @@ export default function MyCommnets(props){
     };
     
     // ソート
+    
     const selectSort = (event)=>{
-        const prev_comments = Array.from(sortedComments);
-        const sort = event.target.value.split(',');
-        
-        if(sort[0]=='question_id'){
+        setSorted(event.target.value);
+        if(event.target.value == 'question'){
             setQuestionMode(true);
-            return;
+        }else{
+            setQuestionMode(false);
         }
-        
-        prev_comments.sort((a,b)=>{
-            return a[sort[0]] < b[sort[0]] ? -1 : 1;
-        });
-        if(sort[1]=='desc'){
-            prev_comments.reverse();
-        }
-        setSortedComments(prev_comments);
-        setQuestionMode(false);
+        reset();
     };
+    
+        
+    if(sorted != 'question'){
+        views.sort((a,b)=>{
+            if(desc){
+                if(a[sorted] > b[sorted]) return -1;
+                if(a[sorted] < b[sorted]) return 1;
+            }else{
+                if(a[sorted] < b[sorted]) return -1;
+                if(a[sorted] > b[sorted]) return 1;
+            }
+            
+            if(a.id < a.id) return -1;
+            if(a.id > a.id) return 1;
+        });
+        
+    }
+        
     
     const toQuestion = (id)=>{
         get(route('view_q', id));
@@ -73,10 +87,6 @@ export default function MyCommnets(props){
     };
     
     
-    
-    const { data, setData, get, delete:destroy, errors, processing, reset, transform } = useForm({
-        checked : new Set(),
-    });
     
     
     // 選択系
@@ -113,6 +123,14 @@ export default function MyCommnets(props){
     const releaseAll = ()=>{
         reset();
     };
+    
+    if(questionMode){
+        views = _questions.slice( (page - 1) * 10, (page * 10) );
+        limit = Math.ceil(_questions.length / 10);
+    }else{
+        views = _comments.slice( (page - 1) * 20, (page * 20) );
+        limit = Math.ceil(_comments.length / 20);
+    }
     
     
     // 削除系
@@ -163,6 +181,8 @@ export default function MyCommnets(props){
                 </div>
             }
         >
+
+        
         { _comments[0] != null ? (
         <div>
             { checkMode &&
@@ -196,21 +216,27 @@ export default function MyCommnets(props){
             <div onClick={()=>(console.log(views))}>viewsを見る</div>
 
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
-                <div>
-                    <Sort
-                        onChange={selectSort}
-                        options={
-                            <>
-                                <option value='created_at,asc' className='text-xs'>作成日時（古い順）</option>
-                                <option value='created_at,desc' className='text-xs'>作成日時（新しい順）</option>
-                                <option value='updated_at,asc' className='text-xs'>更新日時（古い順）</option>
-                                <option value='updated_at,desc' className='text-xs'>更新日時（新しい順）</option>
-                                <option value='g4c,desc' className='text-xs'>いいね数（多い順）</option>
-                                <option value='g4c,asc' className='text-xs'>いいね数（少ない順）</option>
-                                <option value='question_id' className='text-xs'>問題ごと（五十音順）</option>
-                            </>
-                        }
-                    />
+                <div className='flex'>
+                    <div>
+                        <Sort
+                            onChange={selectSort}
+                            options={
+                                <>
+                                    <option value='created_at' className='text-xs'>作成日時</option>
+                                    <option value='updated_at' className='text-xs'>更新日時</option>
+                                    <option value='g4c' className='text-xs'>いいね数</option>
+                                    <option value='question' className='text-xs'>問題ごと（五十音順）</option>
+                                </>
+                            }
+                        />
+                    </div>
+                    
+                    <div className='pl-3'>
+                        <input id='asc' type='radio' onClick={()=>changeOrder(false)} checked={!desc}/>
+                        <label for='asc' >昇順</label>
+                        <input id='desc' type='radio' onClick={()=>changeOrder(true)} checked={desc} className='pl-3'/>
+                        <label for='desc' >降順</label>
+                    </div>
                 </div>
                 
                 
@@ -259,72 +285,77 @@ export default function MyCommnets(props){
                             </div>
                         )
                         :
-                        views.map((question)=>
-                            <div className='py-2'>
-                                <div className='text-lg'>
-                                    <div className='flex justify-between'>
-                                        <div className='flex' onClick={(e)=>clickTitle(question.id)}>
-                                            問題「{question.title}」へのコメント：
-                                        { !isClosed.has(question.id) ?
-                                            <div className='px-2'>
-                                                閉じる
-                                            </div>
-                                            :
-                                            <div className='px-2'>
-                                                開く
-                                            </div>
-                                        }
-                                        </div>
-                                        <div align='right' className='px-2'>
-                                            <NormalButton onClick={()=>toQuestion(question.id)}>問題を見る</NormalButton>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                { !isClosed.has(question.id) &&
-                                    Q_comments[question.id].map((comment)=>
-                                        <div className='py-4 flex'>
-                                            { checkMode &&
-                                                <div>
-                                                    <input type='checkbox' 
-                                                        checked={ data.checked.has(comment.id) } onClick={()=>clickCheckBox(comment.id)}
-                                                    />
+                        <div className='divide-y-4'>
+                            { views.map((question)=>
+                                <div className='py-2'>
+                                    <div className='text-lg'>
+                                        <div className='flex justify-between'>
+                                            <div className='flex' onClick={(e)=>clickTitle(question.id)}>
+                                                問題「{question.title}」へのコメント：
+                                            { !isClosed.has(question.id) ?
+                                                <div className='px-2'>
+                                                    閉じる
+                                                </div>
+                                                :
+                                                <div className='px-2'>
+                                                    開く
                                                 </div>
                                             }
-                                        
-                                            <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto'
-                                                onClick={ checkMode && 
-                                                    (()=>clickCheckBox(comment.id))
-                                                }
-                                            >
-                                                <div className='py-4 px-2 flex justify-between'>
-                                                    <div>
-                                                        <div>
-                                                            {comment.body}
-                                                        </div>
-                                                        <div className='text-xs flex py-2'>
-                                                            <div>
-                                                                いいね数：{comment.g4c_hasmany_count}
-                                                            </div>
-                                                            <div className='pl-3'>
-                                                                作成日時：{comment.created_at}
-                                                            </div>
-                                                        </div>
+                                            </div>
+                                            <div align='right' className='px-2'>
+                                                <NormalButton onClick={()=>toQuestion(question.id)}>問題を見る</NormalButton>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                    { !isClosed.has(question.id) &&
+                                        Q_comments[question.id].map((comment)=>
+                                            <div className='py-4 flex'>
+                                                { checkMode &&
+                                                    <div className='cursor-pointer'>
+                                                        <input type='checkbox' 
+                                                            checked={ data.checked.has(comment.id) } onClick={()=>clickCheckBox(comment.id)}
+                                                        />
                                                     </div>
-                                                    <div align='right' className='py-2'>
-                                                        <div className='px-2'>
-                                                            <NormalButton onClick={()=>toEdit(comment.id)}>編集</NormalButton>
+                                                }
+                                            
+                                                <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto'
+                                                    onClick={ checkMode && 
+                                                        (()=>clickCheckBox(comment.id))
+                                                    }
+                                                >
+                                                    <div className='py-4 px-2 flex justify-between'>
+                                                        <div>
+                                                            <div>
+                                                                {comment.body}
+                                                            </div>
+                                                            <div className='text-xs flex py-2'>
+                                                                <div>
+                                                                    いいね数：{comment.g4c_hasmany_count}
+                                                                </div>
+                                                                <div className='pl-3'>
+                                                                    作成日時：{comment.created_at}
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        
+                                                        <div align='right' className='py-2'>
+                                                            <div className='px-2'>
+                                                                <NormalButton onClick={()=>toEdit(comment.id)}>編集</NormalButton>
+                                                            </div>
+                                                            
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )
-                                }
+                                        )
+                                    }
+                                    
+                                    </div>
+                                    
                                 </div>
-                            </div>
-                        )
+                                )
+                            }
+                        </div>
                     }
                 </div>
             </div>

@@ -1,6 +1,5 @@
 import { Link, } from '@inertiajs/inertia-react';
 import QuestionTags from '@/Components/QuestionTags';
-import Pagination from '@/Components/PaginateByFront';
 
 export default function QuestionIndex({
     questions, checkMode=false, checked, clickCheckBox, needUser=true, clickQuestion, selected_lang,

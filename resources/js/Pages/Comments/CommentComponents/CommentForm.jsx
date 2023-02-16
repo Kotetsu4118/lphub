@@ -5,7 +5,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import NormalButton from '@/Components/NormalButton';
 import { Link } from '@inertiajs/inertia-react';
 
-export default function CommentForm({value, onhandleChange, errors, submit, processing, clickReset, cancel_link }){
+export default function CommentForm({value, onhandleChange, errors, submit, processing, clickReset, cancel_link, submitValue }){
 
     return(
         <div>
@@ -25,7 +25,7 @@ export default function CommentForm({value, onhandleChange, errors, submit, proc
                 </div>
                 
                 <div className="py-2">
-                    <PrimaryButton processing={processing}>送信</PrimaryButton>
+                    <PrimaryButton processing={processing}>{submitValue}</PrimaryButton>
                 </div>
             </form>
         
