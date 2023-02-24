@@ -28,7 +28,7 @@ export default function DualLayout({ logined, auth, header, children, }) {
                                     問題作成
                                 </NavLink>
                                 <NavLink href={route('practice')} active={route().current('practice')}>
-                                    練習だぴょん
+                                    練習
                                 </NavLink>
                                 {/*タグ系*/}
                                 <div className="hidden sm:flex sm:items-center" active='active'>

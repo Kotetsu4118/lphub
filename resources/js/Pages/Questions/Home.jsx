@@ -10,7 +10,6 @@ import TextInput from '@/Components/TextInput';
 export default function Home(props) {
     
     const { data, setData, get, processing, reset, } = useForm({
-    //     searchWord : props.searchWord,
     });
     
     const questions = props.questions;
@@ -23,13 +22,14 @@ export default function Home(props) {
     const [hiddenMine, setHiddenMine] = useState(false);
     const [searchedQuestions, setSearchedQuestions] = useState(questions);
     const [searchWord, setSearchWord] = useState('');
-    const [searchTarget, setSearcTarget] = useState(new Set().add('title'));
+    const [searchTarget, setSearcTarget] = useState(new Set(['title']));
     
     let views;
     
     const searchReset = ()=>{
         setSearchWord('');
         setSearchedQuestions(questions);
+        setSearcTarget(new Set(['title']));
     };
     
     const changeWord = (event)=>{
@@ -39,7 +39,6 @@ export default function Home(props) {
     // 言語選択
     const changeLang = (event)=>{
         setLanguage_id(event.target.value);
-        // reset();
     };
     
     // 言語による絞り込み
@@ -64,7 +63,6 @@ export default function Home(props) {
     let tentativeQuestions = new Set(null);
     
     const searchByTarget = (target)=>{
-        // tentativeQuestions = tentativeQuestions.concat(questions.filter(questions=>questions[target].indexOf(searchWord) > -1));
         tentativeQuestions =  new Set([...tentativeQuestions, ...new Set(questions.filter(questions=>questions[target].indexOf(searchWord) > -1))]);
     };
     
@@ -89,18 +87,15 @@ export default function Home(props) {
     
     const changeOrder = (order)=>{
         setDesc(order);
-        // reset();
     };
     
     const clickPage = (p)=>{
         setPage(p);
-        // reset();
     };
     
     // ソート
     const selectSort = (event)=>{
         setSorted(event.target.value);
-        // reset();
     };
     
     const test = [];

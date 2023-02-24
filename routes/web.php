@@ -50,6 +50,8 @@ Route::get('/home_t/{tag}', [TagController::class, 'home_t'])->name('home_t');
 Route::get('home_search/{search_word}', [QuestionController::class, 'home_search'])->name('home_search');
 Route::get('/questions/{question}', [QuestionController::class, 'view_q'])->name('view_q');
 
+Route::post('/test', [QuestionController::class, 'test'])->name('test');
+
 // 認証つけるか迷いどころ
 // タグ系
 Route::get('/tags', [TagController::class, 'index_t'])->name('index_t');
