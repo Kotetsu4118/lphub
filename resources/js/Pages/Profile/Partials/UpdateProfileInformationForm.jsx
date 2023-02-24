@@ -36,11 +36,13 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     };
     
     const setDefaultIcon = ()=>{
+        document.getElementById('icon').value = null;
         setData('icon','default');
         setImagePreview('https://lphub.s3.ap-northeast-1.amazonaws.com/user_icon/default_user_icon.png');
     };
     
     const resetIcon = ()=>{
+        document.getElementById('icon').value = null;
         reset('icon');
         setImagePreview(user.user_icon_path);
     };
@@ -120,7 +122,9 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                     </div>
                 )}
                 
-                
+                <div onClick={()=>(console.log(data))}>dataを見る</div>
+                <div onClick={()=>(console.log(imagePreview))}>imagePreviewを見る</div>
+
                 <div className="mt-4">
                     <InputLabel for="icon" value="アイコン" />
                     <input id='icon' type='file' accept="image/*" onChange={(e)=>setIcon(e)}/>

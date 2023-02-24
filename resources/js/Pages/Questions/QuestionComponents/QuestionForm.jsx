@@ -9,7 +9,7 @@ import SelectLang from '@/Components/SelectLang';
 export default function QuestionForm({languages, selected_lang, tags, init_lang, title_value, body_value, answer_value, errors, processing, submit, changeLang, onhandleChange, tag2array, cancel_link, clickReset, clickClear }){
     return(
         <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
-            <form onSubmit={submit} className="mt-6 space-y-6">
+            <form onSubmit={false} className="mt-6 space-y-6">
             
                 <div>言語選択</div>
                 <div className='flex'>
@@ -96,7 +96,7 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                 
             
                 <div className="py-2">
-                    <PrimaryButton processing={processing}>保存</PrimaryButton>
+                    <PrimaryButton type={'button'} onClick={submit} processing={processing}>保存</PrimaryButton>
                 </div>
             </form>
             
