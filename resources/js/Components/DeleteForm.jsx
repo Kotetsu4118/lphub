@@ -20,14 +20,14 @@ export default function DeleteForm({
                         {message}
                     </h2>
 
-                    { confirmContents!=null && confirmContents.size > 0 && 
+                    { confirmContents!=null && confirmContents.length > 0 && 
                     <div>
                         <hr/>
                         <div className='overflow-y-auto overflow-x-hidden px-2 h-44'>
                             {
                                 Array.from(confirmContents).map((content)=>
                                     <div calssName='py-2'>
-                                        {content}
+                                        {content.title}
                                     </div>
                                 )
                             }

@@ -25,8 +25,8 @@ class QuestionRequest extends FormRequest
     {   
         return [
             'title' => 'required | string | max:20',
-            'body' => 'required | string | max:2000',
-            'answer' => 'required | string | max:2000',
+            'body' => 'required | string',
+            'answer' => 'required | string ',
             'language_id' => 'required',
         ];
     }

@@ -4,10 +4,20 @@ import SelectLevel from '@/Components/SelectLevel';
 import CompleteLater from '@/Components/CompleteLater';
 import QuestionTags from '@/Components/QuestionTags';
 import Collapse from '@/Components/Collapse';
-import { Link, useForm, usePage } from '@inertiajs/inertia-react';
+import { Link, useForm } from '@inertiajs/inertia-react';
 import { useState } from 'react';
 import CommentForm from '@/Pages/Comments/CommentComponents/CommentForm';
 import Pagination from '@/Components/PaginateByFront';
+
+// リッチテキストエディタ系
+import "@/Plugins/styles.css";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { CodeHighlightNode, CodeNode } from "@lexical/code";
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+import Theme from '@/Plugins/Theme';
+import Editor from '@/Components/Editor';
 
 
 export default function View_q(props){
@@ -33,7 +43,7 @@ export default function View_q(props){
         setPage(p);
     };
     
-    
+    // コメント
     const comments = props.comments.slice( (page - 1) * 10, (page * 10) ).map((comment)=>
         <div className='py-4'>
             <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg'>
@@ -131,6 +141,37 @@ export default function View_q(props){
         reset('comment');
     };
     
+    // ----------------------------------------------------
+    // リッチテキストエディタ系
+    const nodes = [
+        HeadingNode,
+        ListNode,
+        ListItemNode,
+        QuoteNode,
+        CodeNode,
+        CodeHighlightNode,
+        AutoLinkNode,
+        LinkNode
+      ];
+      
+      const initialBody = question.body;
+      const initialAnswer = question.answer;
+      
+      const bodyConfig = {
+          editorState: initialBody,
+          editable: false,
+          theme: Theme(),
+          nodes: nodes,
+          onError(error) {throw error;},
+      };
+      const answerConfig = {
+          editorState: initialAnswer,
+          editable: false,
+          theme: Theme(),
+          nodes: nodes,
+          onError(error) {throw error;},
+      };
+    
     return (
         <DualLayout 
             logined={props.auth.user != null}
@@ -153,7 +194,6 @@ export default function View_q(props){
                 </div>
             }
         >
-            <div onClick={()=>(console.log(data))}>Debag</div>
 
             <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -187,11 +227,17 @@ export default function View_q(props){
                         
                         {/*問題内容*/}
                         <div className="py-2">
+                            
                             <div>
                                 <div className='text-base'>問題：</div>
+                                {/*
                                 <div className='pt-2'>{ question.body }</div>
+                                */}
                             </div>
-                        
+                            
+                            <LexicalComposer initialConfig={bodyConfig}>
+                                <Editor editMode={false} />
+                            </LexicalComposer>
                         
                         {/*答え*/}
                             <div className='pt-4'>
@@ -199,11 +245,22 @@ export default function View_q(props){
                                     opened_label={'答えを隠す'}
                                     closed_label={'答えを見る'}
                                     opened={isOpen}
-                                    contents={question.answer}
+                                    contents={
+                                        // question.answer
+                                        <LexicalComposer initialConfig={answerConfig}>
+                                            <Editor editMode={false} />
+                                        </LexicalComposer>
+                                    }
                                     onClick={clickAnswer}
                                     width={'w-20'}
                                 />
                             </div>
+                        </div>
+                        
+                        <div>
+                            
+                            
+                            
                         </div>
                         
                         <div className='py-4 flex'>
@@ -252,10 +309,9 @@ export default function View_q(props){
                 </div>
                 
                 {/*ここからはコメント系*/}
-                <hr className='py-4'/>
-                    <div>コメント系</div>
                 
                 <div className='py-6'>
+                コメント
                 { comments[0] ?
                 <div>
                     {comments}

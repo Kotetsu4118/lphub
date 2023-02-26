@@ -6,7 +6,6 @@ import {
   INSERT_PARAGRAPH_COMMAND,
   $getSelection,
   $createParagraphNode,
-  $setBlocksType_experimental,
   ParagraphNode,
   $wrapNodes,
   insertNewAfter,

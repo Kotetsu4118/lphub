@@ -86,10 +86,6 @@ export default function QuestionsLayout({
                                                     {question.title}
                                                 </div>
                                                 
-                                                <div className='py-4 pl-3 text-gray-900'>
-                                                    {question.body}
-                                                </div>
-                                                
                                                 { needUser &&
                                                 <div className='py-2'>
                                                     作成者：{question.user.name}
@@ -100,20 +96,22 @@ export default function QuestionsLayout({
                                                     vaild={!checkMode}
                                                 />
                                                 
-                                                <div className='py-2'>
-                                                    いいね数：{question.g4q_hasmany_count}
+                                                <div className='flex space-x-4'>
+                                                    <div className='py-2'>
+                                                        いいね数：{question.g4q_hasmany_count}
+                                                    </div>
+                                                    
+                                                    <div className='py-2'>
+                                                        コメント数：{question.comment_count}
+                                                    </div>
+                                                    <div className='py-2'>
+                                                    
+                                                        {question.level_hasmany_avg_level ?
+                                                            <div>難易度：{Math.round(question.level_hasmany_avg_level * 100) / 100}</div> :
+                                                            <div>難易度：未評価</div>
+                                                        }
+                                                    </div> 
                                                 </div>
-                                                
-                                                <div className='py-2'>
-                                                    コメント数：{question.comment_count}
-                                                </div>
-                                                <div className='py-2'>
-                                                
-                                                    {question.level_hasmany_avg_level ?
-                                                        <div>難易度：{Math.round(question.level_hasmany_avg_level * 100) / 100}</div> :
-                                                        <div>難易度：未評価</div>
-                                                    }
-                                                </div> 
                                             </div>
                                             </Link>
                                             
@@ -124,9 +122,6 @@ export default function QuestionsLayout({
                                                     {question.title}
                                                 </div>
                                                 
-                                                <div className='py-4 pl-3 text-gray-900'>
-                                                    {question.body}
-                                                </div>
                                                 
                                                 { needUser &&
                                                 <div className='py-2'>
@@ -137,21 +132,22 @@ export default function QuestionsLayout({
                                                     tags={question.tag}
                                                     vaild={!checkMode}
                                                 />
-                                                
-                                                <div className='py-2'>
-                                                    いいね数：{question.g4q_hasmany_count}
-                                                </div>
-                                                
-                                                <div className='py-2'>
-                                                    コメント数：{question.comment_count}
-                                                </div>
-                                                <div className='py-2'>
-                                                
-                                                    {question.level_hasmany_avg_level ?
-                                                        <div>難易度：{Math.round(question.level_hasmany_avg_level * 100) / 100}</div> :
-                                                        <div>難易度：未評価</div>
-                                                    }
+                                                <div className='flex space-x-4'>
+                                                    <div className='py-2'>
+                                                        いいね数：{question.g4q_hasmany_count}
+                                                    </div>
+                                                    
+                                                    <div className='py-2'>
+                                                        コメント数：{question.comment_count}
+                                                    </div>
+                                                    <div className='py-2'>
+                                                    
+                                                        {question.level_hasmany_avg_level ?
+                                                            <div>難易度：{Math.round(question.level_hasmany_avg_level * 100) / 100}</div> :
+                                                            <div>難易度：未評価</div>
+                                                        }
                                                 </div> 
+                                                </div>
                                             </div>
                                             
                                             }

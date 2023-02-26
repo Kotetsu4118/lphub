@@ -1,10 +1,23 @@
 import DualLayout from '@/Layouts/DualLayout';
-import { Link, useForm, usePage } from '@inertiajs/inertia-react';
+import { useForm } from '@inertiajs/inertia-react';
 import QuestionForm from '@/Pages/Questions/QuestionComponents/QuestionForm';
-import DeleteForm from '@/Components/DeleteForm'
-import { useState } from 'react'
+import DeleteForm from '@/Components/DeleteForm';
+import { useState } from 'react';
+
+import "@/Plugins/styles.css";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { CodeHighlightNode, CodeNode } from "@lexical/code";
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+import Theme from '@/Plugins/Theme';
+import Editor from '@/Components/Editor';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+
+
 
 export default function EditQ(props) {
+    
     const question = props.question;
     const _tags = props.tags; 
     const _languages = props.languages;
@@ -74,13 +87,17 @@ export default function EditQ(props) {
     
     const submit = (e) => {
         e.preventDefault();
-
+        
+        data.body = JSON.stringify(body);
+        data.answer = JSON.stringify(answer);
         data.put_tags = Array.from(data.checked_tag);
         put(route('update_q', question.id));
     };
     
     
     const clickReset = ()=>{
+        data.body = question.body;
+        data.answer = question.answer;
         reset();
     };
     
@@ -104,9 +121,39 @@ export default function EditQ(props) {
             onFinish: () => reset(),
         });
     };
-
     
     
+    // ----------------------------------------------------
+    const nodes = [
+        HeadingNode,
+        ListNode,
+        ListItemNode,
+        QuoteNode,
+        CodeNode,
+        CodeHighlightNode,
+        AutoLinkNode,
+        LinkNode
+      ];
+      
+      const initialBody = question.body;
+      const initialAnswer = question.answer;
+      
+        let body;
+        let answer;
+      
+      const bodyConfig = {
+          editorState: initialBody,
+          theme: Theme(),
+          nodes: nodes,
+          onError(error) {throw error;},
+      };
+      const answerConfig = {
+          editorState: initialAnswer,
+          theme: Theme(),
+          nodes: nodes,
+          onError(error) {throw error;},
+      };
+      
     return(
         <DualLayout
             logined={props.auth.user != null}
@@ -129,6 +176,24 @@ export default function EditQ(props) {
                 onhandleChange={onhandleChange}
                 cancel_link={route('view_q', question.id)}
                 clickClear={clickReset}
+                body={
+                    <LexicalComposer initialConfig={bodyConfig}>
+                        <Editor
+                          languages={props.languages}
+                          editMode={true}
+                        />
+                        <OnChangePlugin onChange={editorState => body = editorState}/>
+                    </LexicalComposer>
+                }
+                answer={
+                    <LexicalComposer initialConfig={answerConfig}>
+                        <Editor
+                          languages={props.languages}
+                          editMode={true}
+                        />
+                        <OnChangePlugin onChange={editorState => answer = editorState}/>
+                    </LexicalComposer>
+                }
             />
             
             <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
@@ -146,9 +211,14 @@ export default function EditQ(props) {
                         errors={errors}
                         closeModal={closeModal}
                         message={'この問題を削除しますか?'}
+                        
                     />
                 
                 </div>
+            
+                
+                
+                
             </div>
         
         </DualLayout>

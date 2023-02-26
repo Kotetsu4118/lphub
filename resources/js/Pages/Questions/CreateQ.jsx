@@ -2,6 +2,16 @@ import DualLayout from '@/Layouts/DualLayout';
 import { Link, useForm, usePage } from '@inertiajs/inertia-react';
 import QuestionForm from '@/Pages/Questions/QuestionComponents/QuestionForm';
 
+import "@/Plugins/styles.css";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { ListItemNode, ListNode } from "@lexical/list";
+import { CodeHighlightNode, CodeNode } from "@lexical/code";
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+import Theme from '@/Plugins/Theme';
+import Editor from '@/Components/Editor';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+
 export default function CreateQ(props) {
     
     const _tags = props.tags; 
@@ -68,6 +78,8 @@ export default function CreateQ(props) {
     const submit = (e) => {
         e.preventDefault();
         
+        data.body = JSON.stringify(body);
+        data.answer = JSON.stringify(answer);
         data.post_tags = Array.from(data.checked_tag);
         post('/questions');
     };
@@ -76,6 +88,33 @@ export default function CreateQ(props) {
     const clickClear = ()=>{
         reset();
     };
+    
+    // ----------------------------------------------------
+    const nodes = [
+        HeadingNode,
+        ListNode,
+        ListItemNode,
+        QuoteNode,
+        CodeNode,
+        CodeHighlightNode,
+        AutoLinkNode,
+        LinkNode
+      ];
+      
+      
+        let body;
+        let answer;
+      
+      const bodyConfig = {
+          theme: Theme(),
+          nodes: nodes,
+          onError(error) {throw error;},
+      };
+      const answerConfig = {
+          theme: Theme(),
+          nodes: nodes,
+          onError(error) {throw error;},
+      };
     
     return(
         <DualLayout
@@ -90,8 +129,8 @@ export default function CreateQ(props) {
                 tags={tags}
                 init_lang={true}
                 title_value={data.title}
-                body_value={data.body}
-                answer_value={data.answer}
+                // body_value={data.body}
+                // answer_value={data.answer}
                 errors={errors}
                 processing={processing}
                 submit={submit}
@@ -99,6 +138,25 @@ export default function CreateQ(props) {
                 onhandleChange={onhandleChange}
                 cancel_link={'/'}
                 clickClear={clickClear}
+                body={
+                    <LexicalComposer initialConfig={bodyConfig}>
+                        <Editor
+                          languages={props.languages}
+                          editMode={true}
+                        />
+                        <OnChangePlugin onChange={editorState => body = editorState}/>
+                    </LexicalComposer>
+                }
+                answer={
+                    <LexicalComposer initialConfig={answerConfig}>
+                        <Editor
+                          languages={props.languages}
+                          editMode={true}
+                        />
+                        <OnChangePlugin onChange={editorState => answer = editorState}/>
+                    </LexicalComposer>
+                }
+                
             />
             
         </DualLayout>
