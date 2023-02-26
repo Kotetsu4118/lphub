@@ -58,38 +58,6 @@ class QuestionController extends Controller
         ]);
     }
     
-    // 検索結果
-    public function home_search(Question $questions, Language $languages, Tag $tags, Request $request){
-        $query = Question::query();
-        
-        $searchWord = $request->searchWord;
-        $spaceConversion = mb_convert_kana($searchWord, 's');
-        $wordArraySearched = preg_split('/[\s,]+/', $spaceConversion, -1, PREG_SPLIT_NO_EMPTY);
-        
-        foreach($wordArraySearched as $word){
-            $query->where('title', 'like', '%'.$word.'%')->orwhere('body', 'like', '%'.$word.'%')->orwhere('answer', 'like', '%'.$word.'%');
-        }
-        
-        
-        $searced_questions = $query->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withCount('comment');
-        
-        if(Auth::user()){
-            $searced_questions = $searced_questions->withExists(['g4q_hasmany'=> function ($q){
-                $q->where('user_id', Auth::user()->id);
-            }]);
-            
-        }
-        
-        $searced_questions = $searced_questions->with(['user', 'tag'])->get();
-        
-        return Inertia::render('Questions/Home', [
-            'questions'=>$searced_questions,
-            'languages'=>$languages->get(),
-            'tags'=>$tags->orderby('name')->get(),
-            'searchWord'=>$searchWord
-        ]);
-        
-    }
     
     // 問題詳細
     public function view_q(Question $question){

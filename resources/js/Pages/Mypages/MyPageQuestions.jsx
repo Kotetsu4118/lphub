@@ -81,18 +81,18 @@ export default function MyPageQuestions(props){
     
     
     const clickCheckBox = (id)=>{
-        const title = views.find( q => q.id==id ).title;
+        // const question = views.find( q => q.id==id );
         const _checked = new Set(data.checked);
-        const _confirmContents = new Set(confirmContents);
+        // const _confirmContents = new Set(confirmContents);
          
-        if(confirmContents.has(title)){
-            _confirmContents.delete(title);
-            setConfirmContents(_confirmContents);
+        // if(confirmContents.has(id)){
+        //     _confirmContents.delete(id);
+        //     setConfirmContents(_confirmContents);
             
-        }else{
-            setConfirmContents(_confirmContents.add(title));
+        // }else{
+        //     setConfirmContents(_confirmContents.add(id));
             
-        }
+        // }
         
         
         if(data.checked.has(id)){
@@ -200,8 +200,7 @@ export default function MyPageQuestions(props){
                 </div>
             }
         >
-            <div onClick={()=>(console.log(confirmContents))}>contentsを見る</div>
-            <div onClick={()=>(console.log(data.checked))}>checkedを見る</div>
+
             { checkMode && questions[0] != null &&
                     <div className='bg-white bg-opacity-75 h-20 inlin-flex'>
                         <div className='flex py-4 justify-between'>
@@ -226,7 +225,10 @@ export default function MyPageQuestions(props){
                                     message={'選択した問題を' + Mrssages[status] + 'から削除しますか？'}
                                     needConfirm={status == 'creates'}
                                     errors={errors}
-                                    confirmContents={confirmContents}
+                                    confirmContents={
+                                        views.filter(question=> data.checked.has(question.id) )
+                                            
+                                    }
                                     
                                 />
                             </div>

@@ -1,22 +1,17 @@
-// import ExampleTheme from "@Plugins/ExampleTheme";
-// import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 // import {LexicalErrorBoundary} from "@lexical/react/LexicalErrorBoundary";
-import TreeViewPlugin from "@/Plugins/TreeViewPlugin";
-import Toolbar from "@/Plugins/preToolbar";
+
+import Toolbar from "@/Plugins/ToolbarPlugin";
 import CtrlEnterPlugin from "@/Plugins/CtrlEnterPlugin";
 import {TabIndentationPlugin} from '@lexical/react/LexicalTabIndentationPlugin';
-
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { TRANSFORMERS } from "@lexical/markdown";
-
 
 
 
@@ -29,38 +24,34 @@ function Placeholder() {
 }
 
 
-
-
-
-export default function Editor({languages, func}) {
-    const [editor] = useLexicalComposerContext();
-    const editorState = editor.getEditorState();
-    const jsonString = JSON.stringify(editorState);
-    func(jsonString);
-    // func(editorState.toJSON());
+export default function Editor({languages, selectedLang, editMode}) {
+  
   
   return (
     <>
 
       <div  className="editor-container">
         
+        { editMode &&
         <Toolbar 
           languages={languages}
         />
-        
-        <div id='unko'  className="editor-inner">
-          <div className='overflow-y-auto overflow-x-hidden h-96'>
+        }
+        <div className="editor-inner">
+          <div className={ editMode ? 'overflow-y-auto overflow-x-hidden h-96' : ''}>
           <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
+            contentEditable={ 
+            // editMode ?
+              <ContentEditable className="editor-input" />
+              // :
+              // false
+            }
             placeholder={<Placeholder />}
             // ErrorBoundary={LexicalErrorBoundary}
-            
             
           />
           </div>
           <HistoryPlugin />
-          
-          <TreeViewPlugin />
           
           <AutoFocusPlugin />
           

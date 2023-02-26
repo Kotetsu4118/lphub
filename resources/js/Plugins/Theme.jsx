@@ -1,4 +1,6 @@
-const exampleTheme = {
+
+export default function Theme(){
+    return {
   ltr: "ltr",
   rtl: "rtl",
   placeholder: "editor-placeholder",
@@ -7,23 +9,26 @@ const exampleTheme = {
   heading: {
     h1: "editor-heading-h1",
     h2: "editor-heading-h2",
-    h3: "editor-heading-h3",
-    h4: "editor-heading-h4",
-    h5: "editor-heading-h5"
   },
   list: {
     nested: {
       listitem: "editor-nested-listitem"
     },
-    ol: "editor-list-ol",
-    ul: "editor-list-ul",
+    olDepth: [
+      "editor-list-ol1",
+      "editor-list-ol2",
+      "editor-list-ol3",
+    ],
+    ulDepth: [
+      "editor-list-ul1",
+      "editor-list-ul2",
+      "editor-list-ul3",
+    ],
     listitem: "editor-listitem"
   },
   image: "editor-image",
   link: "editor-link",
   text: {
-    super: 'editor-text-superscript',
-    sub: 'editor-text-subscript',
     bold: "editor-text-bold",
     italic: "editor-text-italic",
     overflowed: "editor-text-overflowed",
@@ -68,4 +73,4 @@ const exampleTheme = {
   }
 };
 
-export default exampleTheme;
+}

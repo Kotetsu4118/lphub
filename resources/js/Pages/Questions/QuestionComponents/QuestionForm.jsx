@@ -6,7 +6,12 @@ import TextInput from '@/Components/TextInput';
 import { Link } from '@inertiajs/inertia-react';
 import SelectLang from '@/Components/SelectLang';
 
-export default function QuestionForm({languages, selected_lang, tags, init_lang, title_value, body_value, answer_value, errors, processing, submit, changeLang, onhandleChange, tag2array, cancel_link, clickReset, clickClear }){
+export default function QuestionForm({
+    languages, selected_lang, tags, init_lang, title_value, body_value, answer_value, 
+    errors, processing, submit, changeLang, onhandleChange, tag2array, cancel_link, clickReset, clickClear ,
+    body, answer,
+    }){
+    
     return(
         <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
             <form onSubmit={false} className="mt-6 space-y-6">
@@ -29,7 +34,7 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                 <InputError className="mt-2" message={errors.language_id} />
             
                 
-                <div className='py-4'>
+                <div className='pt-4'>
                     
                     <InputLabel for="title" value="タイトル" />
                     <TextInput
@@ -48,8 +53,10 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                 </div>
                 
             
-                <div className='py-4'>
-                    
+                <div className='pt-4'>
+                    問題
+                    {body}
+                    {/*
                     <InputLabel for="body" value="問題" />
                     <TextInput
                             id="body"
@@ -61,11 +68,13 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                     />
                     
                     <InputError className="mt-2" message={errors.body} />
-                        
+                    */}    
                 </div>
                 
                 <div class='py-4'>
-                    
+                    答え
+                    {answer}
+                    {/*
                     <InputLabel for="answer" value="答え" />
                     <TextInput
                             id="answer"
@@ -76,6 +85,7 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                             // autoComplete="name"
                     />
                     <InputError className="mt-2" message={errors.answer} />
+                    */}
                 </div>
                 
                 {/*タグ*/}
@@ -100,15 +110,10 @@ export default function QuestionForm({languages, selected_lang, tags, init_lang,
                 </div>
             </form>
             
-            <div className="py-2 flex">
-                <div>
-                    <NormalButton onClick={clickClear}>リセット</NormalButton>
-                </div>
-                <div className='pl-5'>
-                    <Link href={cancel_link}>
-                        <NormalButton processing={processing}>キャンセル</NormalButton>
-                    </Link>
-                </div>
+            <div className="py-2">
+                <Link href={cancel_link}>
+                    <NormalButton processing={processing}>キャンセル</NormalButton>
+                </Link>
             </div>
             
         </div>
