@@ -48,23 +48,26 @@ export default function View_q(props){
         <div className='py-4'>
             <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg'>
                 <div className='pl-3'>
-                    <div className='flex py-2'>
+                    <div className='flex justify-between py-2'>
                         <div className='flex'>
                             <img class='h-8 w-auto' src={ comment.user.user_icon_path }/>
                             <div className='text-lg p-1'>{comment.user.name}</div>
                         </div>
-                        <div>
+                        <div align='right' className='px-2'>
                             { comment.created_at }
                         </div>
                     
                     </div>
                     
-                    
-                    <div className='pt-2 px-6'>
-                        { comment.body }
+                    <div className='pr-2'>
+                        <div className='rounded-md shadow-sm border border-gray-300 px-2'>
+                            <div className='whitespace-pre-wrap'>
+                            { comment.body }
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class='flex py-2'>
+                    <div class='flex pt-2'>
                         <div>
                             いいね数：{ comment.g4c_hasmany_count }
                         </div>
@@ -98,43 +101,42 @@ export default function View_q(props){
         event.preventDefault();
         // setData('level', event.target.value);
         data.level = event.target.value;
-        console.log(data.level);
         put('/questions/' + question.id + '/level');
     };
     
     const changeComplete = (event)=>{
         data.complete = !data.complete;
-        console.log(data.complete);
         put(route('update_complete', question.id));
     };
     
     const changeLater = (event)=>{
         data.later = !data.later;
-        console.log(data.later);
         put(route('update_later', question.id));
     };
     
     const changeG4Q = (event)=>{
         data.g4q = !data.g4q;
-        console.log(data.g4q);
         put(route('update_g4q', question.id));
     };
     
     const changeG4C = (event)=>{
-        console.log(event.target.checked);
         data.g4c = event.target.checked;
-        // console.log(data.g4c);
         put(route('update_g4c', event.target.value));
     };
     
     const submit = (e) => {
         e.preventDefault();
         
-        post(route('store_c', question.id));
+        post(route('store_c', question.id),{
+            onSuccess: ()=> reset('comment')
+        }
+        
+        );
+    
     };
     
     const onhandleChange = (event)=>{
-        setData(event.target.id, event.target.value);  
+        setData('comment', event.target.value);
     };
     
     const resetComment = ()=>{
@@ -229,16 +231,16 @@ export default function View_q(props){
                         <div className="py-2">
                             
                             <div>
-                                <div className='text-base'>問題：</div>
+                                <div className='text-base underline'>問題：</div>
                                 {/*
                                 <div className='pt-2'>{ question.body }</div>
                                 */}
                             </div>
-                            
-                            <LexicalComposer initialConfig={bodyConfig}>
-                                <Editor editMode={false} />
-                            </LexicalComposer>
-                        
+                            <div className='p-2 rounded-md shadow-sm border border-gray-300'>
+                                <LexicalComposer initialConfig={bodyConfig}>
+                                    <Editor editMode={false} />
+                                </LexicalComposer>
+                            </div>
                         {/*答え*/}
                             <div className='pt-4'>
                                 <Collapse
@@ -247,9 +249,11 @@ export default function View_q(props){
                                     opened={isOpen}
                                     contents={
                                         // question.answer
-                                        <LexicalComposer initialConfig={answerConfig}>
-                                            <Editor editMode={false} />
-                                        </LexicalComposer>
+                                        <div className='p-2 rounded-md shadow-sm border border-gray-300'>
+                                            <LexicalComposer initialConfig={answerConfig}>
+                                                <Editor editMode={false} />
+                                            </LexicalComposer>
+                                        </div>
                                     }
                                     onClick={clickAnswer}
                                     width={'w-20'}
@@ -264,8 +268,10 @@ export default function View_q(props){
                         </div>
                         
                         <div className='py-4 flex'>
-                            <div className='pr-4'>
-                                作成者：{ question.user.name }
+                            <div className='pr-4 flex'>
+                                作成者：
+                                <img class='h-8 w-auto' src={ question.user.user_icon_path }/>
+                                { question.user.name }
                             </div>
                                 
                             <div className='pr-4'>
@@ -282,6 +288,7 @@ export default function View_q(props){
                         <div>
                             <QuestionTags
                                 tags={props.tags}
+                                vaild={true}
                             />
                         </div>
                         
@@ -331,6 +338,8 @@ export default function View_q(props){
                 }
                 </div>
                 
+                <div onClick={()=>(console.log(data.comment.split('\n')))}>dataを見る</div>
+
                 <CommentForm
                     value={data.comment}
                     onhandleChange={onhandleChange}

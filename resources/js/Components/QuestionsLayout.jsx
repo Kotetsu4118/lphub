@@ -5,6 +5,7 @@ import SelectLang from '@/Components/SelectLang';
 import Sort from '@/Components/Sort';
 import QuestionTags from '@/Components/QuestionTags';
 import { Link, } from '@inertiajs/inertia-react';
+import {useRef} from 'react';
 
 export default function QuestionsLayout({
     checkMode, checkAll, releaseAll, onDengerButton, showModal, closeModal, needConfirm, onSubmitDeletion, processing, deletionMessage,
@@ -12,9 +13,19 @@ export default function QuestionsLayout({
     selectSort, desc, changeOrder, needUser, isHome=false, good, later, complete, isLogin, hiddenMine, changeHiddenMine, errors,
     confirmContents,
 }){
+    // const isTag = useRef();
+    // document.addEventListener('mouseover', function(event) {
+    //     if(event.target.name == 'tags'){
+    //         isTag.current = true;
+    //     }else{
+    //         isTag.current = false;
+    //     }
+    //     console.log(isTag.current);
+    // });
     
     return(
         <div>
+
         { !isNull ? 
                 <div>
                     <div className='flex justify-between'>
@@ -72,7 +83,7 @@ export default function QuestionsLayout({
                                     </div>
                                     }
                                     
-                                    <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto'
+                                    <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto hover:bg-gray-300'
                                         onClick={ checkMode && (
                                             ()=>clickCheckBox(question.id)
                                         )}
@@ -87,13 +98,17 @@ export default function QuestionsLayout({
                                                 </div>
                                                 
                                                 { needUser &&
-                                                <div className='py-2'>
-                                                    作成者：{question.user.name}
+                                                <div className='py-2 flex'>
+                                                    作成者：
+                                                    <img class='h-6 w-auto' src={ question.user.user_icon_path }/> 
+                                                    {question.user.name}
+
                                                 </div>
                                                 }
                                                 <QuestionTags
                                                     tags={question.tag}
                                                     vaild={!checkMode}
+                                                    name='tags'
                                                 />
                                                 
                                                 <div className='flex space-x-4'>
@@ -116,7 +131,7 @@ export default function QuestionsLayout({
                                             </Link>
                                             
                                             :
-                                            <div className='pl-3'>
+                                            <div className='pl-3 hover:cursor-pointer'>
                                             
                                                 <div className='py-2 text-xl text-gray-900'>
                                                     {question.title}
@@ -124,13 +139,17 @@ export default function QuestionsLayout({
                                                 
                                                 
                                                 { needUser &&
-                                                <div className='py-2'>
-                                                    作成者：{question.user.name}
+                                                <div className='py-2 flex '>
+                                                    作成者：
+                                                    <img class='h-6 w-auto' src={ question.user.user_icon_path }/> 
+                                                    {question.user.name}
+
                                                 </div>
                                                 }
                                                 <QuestionTags
                                                     tags={question.tag}
                                                     vaild={!checkMode}
+                                                    name='tags'
                                                 />
                                                 <div className='flex space-x-4'>
                                                     <div className='py-2'>

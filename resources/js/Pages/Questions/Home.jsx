@@ -68,14 +68,12 @@ export default function Home(props) {
     
     
     const search = ()=>{
-        console.log('ちぇすとおおおおおお');
         
         Array.from(searchTarget).forEach(target=>
             searchByTarget(target)
         );
         
         setSearchedQuestions(Array.from(tentativeQuestions));
-        console.log(Array.from(tentativeQuestions));
     };
     
     
@@ -150,9 +148,6 @@ export default function Home(props) {
                 </div>
             }
         >
-        
-        <div onClick={()=>(console.log(searchedQuestions))}>searchedQuestionsを見る</div>
-
         
             <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
                 { props.searchWord != null &&

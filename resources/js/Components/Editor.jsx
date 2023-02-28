@@ -35,16 +35,14 @@ export default function Editor({languages, selectedLang, editMode}) {
         { editMode &&
         <Toolbar 
           languages={languages}
+          selectedLang={selectedLang}
         />
         }
         <div className="editor-inner">
           <div className={ editMode ? 'overflow-y-auto overflow-x-hidden h-96' : ''}>
           <RichTextPlugin
             contentEditable={ 
-            // editMode ?
               <ContentEditable className="editor-input" />
-              // :
-              // false
             }
             placeholder={<Placeholder />}
             // ErrorBoundary={LexicalErrorBoundary}
@@ -52,11 +50,7 @@ export default function Editor({languages, selectedLang, editMode}) {
           />
           </div>
           <HistoryPlugin />
-          
-          <AutoFocusPlugin />
-          
           <CodeHighlightPlugin />
-          
           <ListPlugin />
           <LinkPlugin />
           {/*

@@ -112,183 +112,17 @@ function getSelectedNode(selection) {
   }
 }
 
-function BlockOptionsDropdownList({
-  editor,
-  blockType,
-  toolbarRef,
-  setShowBlockOptionsDropDown
-}) {
-  const dropDownRef = useRef(null);
-
-  useEffect(() => {
-    const toolbar = toolbarRef.current;
-    const dropDown = dropDownRef.current;
-
-    if (toolbar !== null && dropDown !== null) {
-      const { top, left } = toolbar.getBoundingClientRect();
-      dropDown.style.top = `${top + 40}px`;
-      dropDown.style.left = `${left}px`;
-    }
-  }, [dropDownRef, toolbarRef]);
-
-  useEffect(() => {
-    const dropDown = dropDownRef.current;
-    const toolbar = toolbarRef.current;
-
-    if (dropDown !== null && toolbar !== null) {
-      const handle = (event) => {
-        const target = event.target;
-
-        if (!dropDown.contains(target) && !toolbar.contains(target)) {
-          setShowBlockOptionsDropDown(false);
-        }
-      };
-      document.addEventListener("click", handle);
-
-      return () => {
-        document.removeEventListener("click", handle);
-      };
-    }
-  }, [dropDownRef, setShowBlockOptionsDropDown, toolbarRef]);
-
-  const formatParagraph = () => {
-    if (blockType !== "paragraph") {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createParagraphNode());
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatLargeHeading = () => {
-    if (blockType !== "h1") {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createHeadingNode("h1"));
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatSmallHeading = () => {
-    if (blockType !== "h2") {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createHeadingNode("h2"));
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatBulletList = () => {
-    if (blockType !== "ul") {
-      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatNumberedList = () => {
-    if (blockType !== "ol") {
-      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatQuote = () => {
-    if (blockType !== "quote") {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createQuoteNode());
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-
-  const formatCode = () => {
-    if (blockType !== "code") {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapNodes(selection, () => $createCodeNode());
-        }
-      });
-    }
-    setShowBlockOptionsDropDown(false);
-  };
-  
   
   
 
-  return (
-    <div className="dropdown" ref={dropDownRef}>
-      <button className="item" onClick={formatParagraph}>
-        <span className="icon paragraph" />
-        <span className="text">Normal</span>
-        {blockType === "paragraph" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatLargeHeading}>
-        <span className="icon large-heading" />
-        <span className="text">Large Heading</span>
-        {blockType === "h1" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatSmallHeading}>
-        <span className="icon small-heading" />
-        <span className="text">Small Heading</span>
-        {blockType === "h2" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatBulletList}>
-        <span className="icon bullet-list" />
-        <span className="text">Bullet List</span>
-        {blockType === "ul" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatNumberedList}>
-        <span className="icon numbered-list" />
-        <span className="text">Numbered List</span>
-        {blockType === "ol" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatQuote}>
-        <span className="icon quote" />
-        <span className="text">Quote</span>
-        {blockType === "quote" && <span className="active" />}
-      </button>
-      <button className="item" onClick={formatCode}>
-        <span className="icon code" />
-        <span className="text">Code Block</span>
-        {blockType === "code" && <span className="active" />}
-      </button>
-    </div>
-  );
-}
-
-export default function Toolbar({languages, }) {
+export default function Toolbar({languages, selectedLang}) {
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [blockType, setBlockType] = useState("paragraph");
   const [selectedElementKey, setSelectedElementKey] = useState(null);
-  const [showBlockOptionsDropDown, setShowBlockOptionsDropDown] = useState(
-    false
-  );
-  const [codeLanguage, setCodeLanguage] = useState("");
+  const [codeLanguage, setCodeLanguage] = useState('python');
   const [isRTL, setIsRTL] = useState(false);
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
@@ -301,6 +135,38 @@ export default function Toolbar({languages, }) {
   const [isQuote, setIsQuote] = useState(false);
   const [isBulletList, setIsBulletList] = useState(false);
   const [isNumberList, setIsNumberList] = useState(false);
+  // const [isHeading, setIsHeading] = useState(false);
+  
+  const _selectedLang = selectedLang;
+  
+  const formatLargeHeading = () => {
+    if (blockType !== "h1") {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapNodes(selection, () => $createHeadingNode("h1"));
+        }
+      });
+    }else{
+      formatParagraph();
+    }
+  };
+
+  const formatSmallHeading = () => {
+    if (blockType !== "h2") {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapNodes(selection, () => $createHeadingNode("h2"));
+        }
+      });
+    }else{
+      formatParagraph();
+    }
+  };
+  
   
   const formatQuote = () => {
     if (blockType !== "quote") {
@@ -317,6 +183,7 @@ export default function Toolbar({languages, }) {
     
   };
   
+  const isCreateCOdeNode = useRef();
   
   const formatCode = () => {
     if (blockType !== "code") {
@@ -325,12 +192,27 @@ export default function Toolbar({languages, }) {
 
         if ($isRangeSelection(selection)) {
           $wrapNodes(selection, () => $createCodeNode());
+          isCreateCOdeNode.current = true;
         }
       });
     }else{
       formatParagraph();
     }
   };
+  
+  if(isCreateCOdeNode.current==true){
+    editor.update(() => {
+      const node = $getNodeByKey(selectedElementKey);
+      if ($isCodeNode(node)) {
+        if(selectedLang!=null){
+          node.setLanguage(selectedLang.name.toLowerCase());
+        }else{
+          node.setLanguage('python');
+        }
+      }
+    });
+    isCreateCOdeNode.current=false;
+  }
   
   const formatBulletList = () => {
     if (blockType !== "ul") {
@@ -468,19 +350,22 @@ export default function Toolbar({languages, }) {
           if ($isCodeNode(node)) {
             node.setLanguage(e.target.value);
           }
+        }else{
+          const node = $getNodeByKey(selectedElementKey);
+          if ($isCodeNode(node)) {
+            if(selectedLang != null){
+              node.setLanguage(selectedLang);
+            }else{
+              node.setLanguage('python');
+            }
+          }
+          
         }
       });
     },
     [editor, selectedElementKey]
   );
 
-  // const insertLink = useCallback(() => {
-  //   if (!isLink) {
-  //     editor.dispatchCommand(TOGGLE_LINK_COMMAND, "https://");
-  //   } else {
-  //     editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
-  //   }
-  // }, [editor, isLink]);
 
 
   const langs = languages.map((lang)=>
@@ -504,6 +389,9 @@ export default function Toolbar({languages, }) {
   return (
     
     <div className="toolbar flex" ref={toolbarRef}>
+      
+      {/*Redo Undo*/}
+
       <div className='flex'>
         <button
           type='button'
@@ -528,34 +416,10 @@ export default function Toolbar({languages, }) {
           <AiOutlineRedo className='h-6 w-auto'/>
         </button>
         <Divider />
-        {/* supportedBlockTypes.has(blockType) && (
-          <>
-            <button
-              className="toolbar-item block-controls"
-              onClick={() =>
-                setShowBlockOptionsDropDown(!showBlockOptionsDropDown)
-              }
-              aria-label="Formatting Options"
-            >
-              <span className={"icon block-type " + blockType} />
-              <span className="text">{blockTypeToBlockName[blockType]}</span>
-              <i className="chevron-down" />
-            </button>
-            {showBlockOptionsDropDown &&
-              createPortal(
-                <BlockOptionsDropdownList
-                  editor={editor}
-                  blockType={blockType}
-                  toolbarRef={toolbarRef}
-                  setShowBlockOptionsDropDown={setShowBlockOptionsDropDown}
-                />,
-                document.body
-              )}
-            <Divider />
-          </>
-        )*/}
+        
         </div>
             <div>
+            {/*一段目*/}
             <div className='flex'>
               <button
                 type='button'
@@ -582,12 +446,34 @@ export default function Toolbar({languages, }) {
               
               <button
                 type='button'
+                onClick={() => 
+                  formatLargeHeading()
+                }
+                className={"toolbar-item spaced " + (blockType=='h1' ? "active" : "")}
+                aria-label="LargeHeading"
+                // disabled={isCode}
+              >
+                <TbH1 className='h-6 w-auto'/>
+              </button>
+              <button
+                type='button'
+                onClick={() => 
+                  formatSmallHeading()
+                }
+                className={"toolbar-item spaced " + (blockType=='h2' ? "active" : "")}
+                aria-label="SmallHeading"
+                // disabled={isCode}
+              >
+                <TbH2 className='h-6 w-auto'/>
+              </button>
+              <button
+                type='button'
                 onClick={() => {
                   editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
                 }}
                 className={"toolbar-item spaced " + (isBold ? "active" : "")}
-                aria-label="Indent"
-                disabled={isCode}
+                aria-label="FormatBold"
+                // disabled={isCode}
               >
                 <TbBold className='h-6 w-auto'/>
               </button>
@@ -598,7 +484,7 @@ export default function Toolbar({languages, }) {
                 }}
                 className={"toolbar-item spaced " + (isItalic ? "active" : "")}
                 aria-label="Format Italics"
-                disabled={isCode}
+                // disabled={isCode}
               >
                 <TbItalic className='h-6 w-auto'/>
               </button>
@@ -609,7 +495,7 @@ export default function Toolbar({languages, }) {
                 }}
                 className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
                 aria-label="Format Underline"
-                disabled={isCode}
+                // disabled={isCode}
               >
                 <TbUnderline className='h-6 w-auto'/>
               </button>
@@ -622,7 +508,7 @@ export default function Toolbar({languages, }) {
                   "toolbar-item spaced " + (isStrikethrough ? "active" : "")
                 }
                 aria-label="Format Strikethrough"
-                disabled={isCode}
+                // disabled={isCode}
               >
                 <TbStrikethrough className='h-6 w-auto'/>
               </button>
@@ -635,7 +521,7 @@ export default function Toolbar({languages, }) {
                   "toolbar-item spaced " + (isSuperScript ? "active" : "")
                 }
                 aria-label="Format SuperScript"
-                disabled={isCode}
+                // disabled={isCode}
               >
                 <TbSuperscript className='h-6 w-auto'/>
               </button>
@@ -648,11 +534,15 @@ export default function Toolbar({languages, }) {
                   "toolbar-item spaced " + (isSubScript ? "active" : "")
                 }
                 aria-label="Format SubScript"
-                disabled={isCode}
+                // disabled={isCode}
               >
                 <TbSubscript className='h-6 w-auto'/>
               </button>
             </div>
+            
+            <hr />
+            
+            {/*二段目*/}
             <div className='flex'>
               <button
                 type='button'
@@ -737,17 +627,19 @@ export default function Toolbar({languages, }) {
                 disabled={isCode}
               >
                 <TbAlignJustified className='h-6 w-auto'/>
-              </button>{" "}
+              </button>
               
               {blockType === "code" &&
-                <>
+                <div className='flex'>
+                  <Divider />
+                  <div className='selectLang pt-3'>言語選択：</div>
                   <Select
                     className="toolbar-item code-language"
                     onChange={onCodeLanguageSelect}
                     options={langs}
                     value={codeLanguage}
                   />
-                </>
+                </div>
               }
           </div>  
         </div>
