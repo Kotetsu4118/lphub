@@ -2,7 +2,7 @@ import DualLayout from '@/Layouts/DualLayout';
 import { useForm } from '@inertiajs/inertia-react';
 import QuestionForm from '@/Pages/Questions/QuestionComponents/QuestionForm';
 import DeleteForm from '@/Components/DeleteForm';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import "@/Plugins/styles.css";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -46,7 +46,6 @@ export default function EditQ(props) {
             
             setData('checked_tag', new Set(data.checked_tag).add(id));
         }
-        console.log(data.checked_tag);
         
     };
     
@@ -54,14 +53,13 @@ export default function EditQ(props) {
         
         data.checked_tag = default_tags;
         setData('language_id', event.target.value);
-        console.log(data.language_id);
     };
     
     
     const tags = _tags.map((tag)=>
         
             <div style={{ display: data.language_id == tag.language_id ? '' : 'none' }} 
-                className='px-2' 
+                className='mr-2 hover:cursor-pointer' 
                 onClick={()=>(
                 clickTag(tag.id)
                 
@@ -88,8 +86,8 @@ export default function EditQ(props) {
     const submit = (e) => {
         e.preventDefault();
         
-        data.body = JSON.stringify(body);
-        data.answer = JSON.stringify(answer);
+        data.body = JSON.stringify(body.current);
+        data.answer = JSON.stringify(body.current);
         data.put_tags = Array.from(data.checked_tag);
         put(route('update_q', question.id));
     };
@@ -138,8 +136,8 @@ export default function EditQ(props) {
       const initialBody = question.body;
       const initialAnswer = question.answer;
       
-        let body;
-        let answer;
+        const body = useRef();
+        const answer = useRef();
       
       const bodyConfig = {
           editorState: initialBody,
@@ -181,8 +179,9 @@ export default function EditQ(props) {
                         <Editor
                           languages={props.languages}
                           editMode={true}
+                          selectedLang={_languages.find((q)=>q.id==data.language_id)}
                         />
-                        <OnChangePlugin onChange={editorState => body = editorState}/>
+                        <OnChangePlugin onChange={editorState => body.current = editorState}/>
                     </LexicalComposer>
                 }
                 answer={
@@ -190,8 +189,9 @@ export default function EditQ(props) {
                         <Editor
                           languages={props.languages}
                           editMode={true}
+                          selectedLang={_languages.find((q)=>q.id==data.language_id)}
                         />
-                        <OnChangePlugin onChange={editorState => answer = editorState}/>
+                        <OnChangePlugin onChange={editorState => answer.current = editorState}/>
                     </LexicalComposer>
                 }
             />

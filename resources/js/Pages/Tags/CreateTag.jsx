@@ -1,5 +1,5 @@
 import DualLayout from '@/Layouts/DualLayout';
-import { Link, useForm, usePage } from '@inertiajs/inertia-react';
+import { useForm, } from '@inertiajs/inertia-react';
 import TagForm from '@/Pages/Tags/TagsComponents/TagForm';
 
 export default function CreateTag(props) {
@@ -34,7 +34,6 @@ export default function CreateTag(props) {
             auth={props.auth}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">タグ作成</h2>}
         >
-            <div onClick={()=>(console.log(data))}>Debag</div>
 
             <TagForm
                 languages={_languages}

@@ -15,6 +15,8 @@ import TreeViewPlugin from "@/Plugins/TreeViewPlugin";
 
 import Theme from '@/Plugins/Theme';
 
+import {$getSelection} from 'lexical';
+
 
 
 export default function Practice(props){
@@ -109,9 +111,7 @@ const answerConfig ={
           />
           
           <OnChangePlugin onChange={editorState => body = editorState}/>
-          
           <TreeViewPlugin />
-          
         </LexicalComposer>
       </div>
       

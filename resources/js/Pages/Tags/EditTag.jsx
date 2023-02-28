@@ -36,9 +36,6 @@ export default function EditTag(props) {
             auth={props.auth}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">タグの編集：{data.name}（言語＝{ _languages.find(element=> element.id==props.tag.language_id).name}）</h2>}
         >
-            <div onClick={()=>(console.log(data))}>Debag</div>
-            <div onClick={()=>(console.log(_languages))}>_languages</div>
-
             <TagForm
                 languages={_languages}
                 selected_lang={data.language_id}

@@ -9,6 +9,9 @@ import {
   ParagraphNode,
   $wrapNodes,
   insertNewAfter,
+  insertParagraph,
+  createParentElementNode,
+  getNextSibling,
 } from "lexical";
 
 
@@ -20,6 +23,8 @@ export default function CtrlEnterPlugin({blockType}){
     
     useEffect(()=>{
         return editor.registerCommand(KEY_ENTER_COMMAND, (payload) => {
+          const event = payload;
+          event.preventDefault();
           // Handle enter key presses here
           const selection = $getSelection();
           const anchorNode = selection.anchor.getNode();
@@ -27,16 +32,14 @@ export default function CtrlEnterPlugin({blockType}){
             anchorNode.getKey() === "root"
               ? anchorNode
               : anchorNode.getTopLevelElementOrThrow();
-          
-          const event = payload;
+          console.log('element：',element);
+          console.log('selection：', selection);
+          console.log('anchorNode：', anchorNode);
+          console.log('getNextSibling：', anchorNode.getNextSibling());
           if(event.ctrlKey){
             if(element.getType() == 'code'){
-                console.log(element);
                 event.preventDefault();
-                // editor.dispatchCommand(INSERT_PARAGRAPH_COMMAND, undefined);
-                // $setBlocksType_experimental(selection, ()=>ParagraphNode);
                 // $wrapNodes(selection, ()=>$createParagraphNode());
-                // insertNewAfter(selection, false);
             }
             else if(element.getType() !== 'paragraph'){
                 event.preventDefault();

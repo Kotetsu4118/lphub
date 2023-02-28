@@ -14,7 +14,6 @@ export default function QuestionForm({
     
     return(
         <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
-            <form onSubmit={false} className="mt-6 space-y-6">
             
                 <div>言語選択</div>
                 <div className='flex'>
@@ -106,9 +105,8 @@ export default function QuestionForm({
                 
             
                 <div className="py-2">
-                    <PrimaryButton type={'button'} onClick={submit} processing={processing}>保存</PrimaryButton>
+                    <NormalButton onClick={submit} processing={processing}>保存</NormalButton>
                 </div>
-            </form>
             
             <div className="py-2">
                 <Link href={cancel_link}>

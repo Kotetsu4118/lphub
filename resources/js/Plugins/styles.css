@@ -48,7 +48,7 @@ h1 {
 .editor-container {
   margin: 0px auto 0px auto;
   border-radius: 2px;
-  max-width: auto;
+  width: auto;
   color: #000;
   position: relative;
   line-height: 20px;
@@ -423,11 +423,20 @@ pre::-webkit-scrollbar-thumb {
   background-color: #eee;
 }
 
+.toolbar .toolbar-item:disabled {
+  background-color: #fff;
+}
+
+
 .toolbar .divider {
   width: 1px;
   background-color: #eee;
   margin: 0 4px;
 }
+
+/*.toolbar .selectLang{*/
+/*  vertical-align: middle;*/
+/*}*/
 
 .toolbar select.toolbar-item {
   border: 0;

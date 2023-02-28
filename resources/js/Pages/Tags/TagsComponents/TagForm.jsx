@@ -9,7 +9,6 @@ import SelectLang from '@/Components/SelectLang';
 export default function TagForm({ languages, selected_lang, init_lang, name_value, submit, errors, onhandleChange, processing, clickReset, cancel_link, changeLang}){
     return(
         <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
-            <form onSubmit={submit} className="mt-6 space-y-6">
             
                 <div>言語選択</div>
                 <div className='flex'>
@@ -36,7 +35,6 @@ export default function TagForm({ languages, selected_lang, init_lang, name_valu
                             // required
                             isFocused
                             
-                            // autoComplete="name"
                     />
                     
                     <InputError className="mt-2" message={errors.name} />
@@ -45,7 +43,7 @@ export default function TagForm({ languages, selected_lang, init_lang, name_valu
                 
                 
                 <div>
-                    <PrimaryButton processing={processing}>保存</PrimaryButton>
+                    <NormalButton onClick={submit}>保存</NormalButton>
                 </div>
             
                 <div className="py-2 flex">
@@ -59,7 +57,6 @@ export default function TagForm({ languages, selected_lang, init_lang, name_valu
                     </div>
                 
                 </div>
-            </form>
         </div>
     );
 }

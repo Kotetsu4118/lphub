@@ -213,7 +213,6 @@ export default function MyCommnets(props){
             </div>
             }
         
-            <div onClick={()=>(console.log(views))}>viewsを見る</div>
 
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
                 <div className='flex'>
@@ -252,7 +251,11 @@ export default function MyCommnets(props){
                                 </div>
                                 }
                                 
-                                <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto'
+                                <div className={ checkMode? 
+                                    'bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto hover:cursor-pointer hover:bg-gray-300'
+                                    :
+                                    'bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto'
+                                    }
                                     onClick={ checkMode && 
                                         (()=>clickCheckBox(comment.id))
                                     }
@@ -290,7 +293,7 @@ export default function MyCommnets(props){
                                 <div className='py-2'>
                                     <div className='text-lg'>
                                         <div className='flex justify-between'>
-                                            <div className='flex' onClick={(e)=>clickTitle(question.id)}>
+                                            <div className='flex hover:cursor-pointer' onClick={(e)=>clickTitle(question.id)}>
                                                 問題「{question.title}」へのコメント：
                                             { !isClosed.has(question.id) ?
                                                 <div className='px-2'>
@@ -319,7 +322,11 @@ export default function MyCommnets(props){
                                                     </div>
                                                 }
                                             
-                                                <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto'
+                                                <div className={ checkMode? 
+                                                    'bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto hover:cursor-pointer hover:bg-gray-300'
+                                                    :
+                                                    'bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto'
+                                                    }
                                                     onClick={ checkMode && 
                                                         (()=>clickCheckBox(comment.id))
                                                     }
@@ -331,7 +338,7 @@ export default function MyCommnets(props){
                                                             </div>
                                                             <div className='text-xs flex py-2'>
                                                                 <div>
-                                                                    いいね数：{comment.g4c_hasmany_count}
+                                                                    いいね数：{ comment.g4c_hasmany_count == null ? 0 : comment.g4c_hasmany_count}
                                                                 </div>
                                                                 <div className='pl-3'>
                                                                     作成日時：{comment.created_at}

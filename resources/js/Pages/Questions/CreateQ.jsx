@@ -1,6 +1,7 @@
 import DualLayout from '@/Layouts/DualLayout';
-import { Link, useForm, usePage } from '@inertiajs/inertia-react';
+import { Link, useForm, } from '@inertiajs/inertia-react';
 import QuestionForm from '@/Pages/Questions/QuestionComponents/QuestionForm';
+import { useRef } from 'react';
 
 import "@/Plugins/styles.css";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -37,7 +38,6 @@ export default function CreateQ(props) {
             
             setData('checked_tag', new Set(data.checked_tag).add(id));
         }
-        console.log(data.checked_tag);
         
     };
     
@@ -45,14 +45,13 @@ export default function CreateQ(props) {
         
         data.checked_tag = default_tags;
         setData('language_id', event.target.value);
-        console.log(data.language_id);
     };
     
     
     const tags = _tags.map((tag)=>
         
             <div style={{ display: data.language_id == tag.language_id ? '' : 'none' }} 
-                className='px-2' 
+                className='hover:cursor-pointer mr-2' 
                 onClick={()=>(
                 clickTag(tag.id)
                 
@@ -62,7 +61,7 @@ export default function CreateQ(props) {
                     name={tag.id}
                     value={tag.id}
                     checked={data.checked_tag.has(tag.id)}
-                    className="rounded border-gray-300 shadow-sm focus:ring-indigo-500"
+                    className="rounded border-gray-300 shadow-sm focus:ring-indigo-500 hover:cursor-pointer"
                 />
                 {tag.name}
             </div>
@@ -78,8 +77,8 @@ export default function CreateQ(props) {
     const submit = (e) => {
         e.preventDefault();
         
-        data.body = JSON.stringify(body);
-        data.answer = JSON.stringify(answer);
+        data.body = JSON.stringify(body.current);
+        data.answer = JSON.stringify(answer.current);
         data.post_tags = Array.from(data.checked_tag);
         post('/questions');
     };
@@ -102,8 +101,8 @@ export default function CreateQ(props) {
       ];
       
       
-        let body;
-        let answer;
+        const body = useRef();
+        const answer = useRef();
       
       const bodyConfig = {
           theme: Theme(),
@@ -129,8 +128,6 @@ export default function CreateQ(props) {
                 tags={tags}
                 init_lang={true}
                 title_value={data.title}
-                // body_value={data.body}
-                // answer_value={data.answer}
                 errors={errors}
                 processing={processing}
                 submit={submit}
@@ -143,8 +140,9 @@ export default function CreateQ(props) {
                         <Editor
                           languages={props.languages}
                           editMode={true}
+                          selectedLang={_languages.find((q)=>q.id==data.language_id)}
                         />
-                        <OnChangePlugin onChange={editorState => body = editorState}/>
+                        <OnChangePlugin onChange={editorState => body.current = editorState}/>
                     </LexicalComposer>
                 }
                 answer={
@@ -152,8 +150,9 @@ export default function CreateQ(props) {
                         <Editor
                           languages={props.languages}
                           editMode={true}
+                          selectedLang={_languages.find((q)=>q.id==data.language_id)}
                         />
-                        <OnChangePlugin onChange={editorState => answer = editorState}/>
+                        <OnChangePlugin onChange={editorState => answer.current = editorState}/>
                     </LexicalComposer>
                 }
                 

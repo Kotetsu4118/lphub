@@ -7,7 +7,7 @@ export default function QuestionTags({tags, vaild}){
                 タグ：
             </div>
             {tags.map((tag)=>
-                <div className='pl-3'>
+                <div className='pl-3 hover:text-blue-400 hover:underline hover:cursor-pointer'>
                     { vaild ? 
                     <Link href={route('home_t', tag.id)}>
                         ・{tag.name}
