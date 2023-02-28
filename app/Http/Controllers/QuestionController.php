@@ -26,15 +26,6 @@ class QuestionController extends Controller
 
     }
     
-    public function practice(Language $languages){
-        return Inertia::render('LexicalPractice', [
-            'languages'=>$languages->get(),
-        ]);
-    }
-    
-    public function test(Request $request){
-        dd($request);
-    }
     
     // home
     public function home(Question $question, Language $languages, Tag $tags,){
