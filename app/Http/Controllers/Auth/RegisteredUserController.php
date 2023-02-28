@@ -56,14 +56,14 @@ class RegisteredUserController extends Controller
             // ユーザアイコンをs3へ保存
             // ユーザアイコンのパスを取得
             $file = $request->icon;
-            if($file !=NULL){
-            $new_user = Auth::user();
-            $user_id = (string)$new_user->id;
-            $file_name = $user_id."_icon.png";
-            $file->storeAs('/user_icon', $file_name, 's3', 'public-read');
-            $url = Storage::disk('s3')->url('/user_icon/'.$file_name);
-            $new_user->user_icon_path = $url;
-            $user->save();
+            if($file !=null){
+                $new_user = Auth::user();
+                $user_id = (string)$new_user->id;
+                $file_name = $user_id."_icon.png";
+                $file->storeAs('/user_icon', $file_name, 's3', 'public-read');
+                $url = Storage::disk('s3')->url('/user_icon/'.$file_name);
+                $new_user->user_icon_path = $url;
+                $user->save();
             }
         });
         

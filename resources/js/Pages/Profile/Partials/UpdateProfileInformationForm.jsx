@@ -122,8 +122,6 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                     </div>
                 )}
                 
-                <div onClick={()=>(console.log(data))}>dataを見る</div>
-                <div onClick={()=>(console.log(imagePreview))}>imagePreviewを見る</div>
 
                 <div className="mt-4">
                     <InputLabel for="icon" value="アイコン" />
