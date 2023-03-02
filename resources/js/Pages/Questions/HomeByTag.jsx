@@ -41,28 +41,6 @@ export default function HomeByTag(props) {
     };
     
     
-    // let view_title = [];
-    // let view_body = [];
-    // let view_answer = [];
-    
-    // const search = ()=>{
-        
-    //     if(searchTarget.has('title')){
-    //         view_title = views.filter(q=> q.title.indexOf(searchWord) > -1);
-    //     }
-        
-    //     if(searchTarget.has('body')){
-    //         view_body = views.filter(q=> q.body.indexOf(searchWord) > -1);
-    //     }
-    //     if(searchTarget.has('answer')){
-    //         view_answer = views.filter(q=> q.answer.indexOf(searchWord) > -1);
-    //     }
-        
-    //     views = view_title.concat(view_body, view_answer);
-    //     setOnSearch
-    // };
-    
-    
     
     const changeHiddenMine = (hidden)=>{
         setHiddenMine(!hidden);
@@ -119,8 +97,6 @@ export default function HomeByTag(props) {
     
     
     
-    
-    
     const limit = Math.ceil(views.length / 20);
     
     const clickQuestion = (id)=>{
@@ -147,11 +123,6 @@ export default function HomeByTag(props) {
             }
         >
         
-        <div onClick={()=>(console.log(data.searchWord))}>searchWordを見る</div>
-        <div onClick={()=>(console.log(searchTarget))}>searchTargetを見る</div>
-        <div onClick={()=>(console.log(onSearch))}>onSearchを見る</div>
-        <div onClick={()=>(console.log(views))}>viewsを見る</div>
-
         
             <div className='max-w-7xl mx-auto sm:px-6 lg:px-8 py-4'>
                 { props.searchWord != null &&
@@ -159,42 +130,6 @@ export default function HomeByTag(props) {
                         {props.searchWord}：での検索結果
                     </div>
                 }
-                {/*
-                <form onSubmit={submit} className="mt-6 space-y-6">
-                <div className='flex'>
-                    <div className='flex-1 w-auto'>
-                        <TextInput
-                            className="mt-1 block w-full"
-                            value={data.searchWord}
-                            handleChange={(e) => changeWord(e)}
-                            // required
-                            isFocused
-                        />
-                    </div>
-                    <div className=''>
-                        <PrimaryButton processing={processing}>検索</PrimaryButton>
-                    </div>
-                </div>
-                </form>
-                */}
-                
-                {/*
-                <div className='flex text-sm pt-1'>
-                    検索対象：
-                    <div className='px-2' onClick={()=>checkSearchTarget('title')}>
-                        タイトル
-                        <input type='checkbox'checked={searchTarget.has('title')}/>
-                    </div>
-                    <div className='px-2' onClick={()=>checkSearchTarget('body')}>
-                        本文
-                        <input type='checkbox' checked={searchTarget.has('body')}/>
-                    </div>
-                    <div className='px-2' onClick={()=>checkSearchTarget('answer')}>
-                        答え
-                        <input type='checkbox' checked={searchTarget.has('answer')}/>
-                    </div>
-                </div>
-                */}
             
                 <div className='pb-10 pt-4'>
                     <QuestionsLayout
@@ -219,6 +154,8 @@ export default function HomeByTag(props) {
                         selectSort={selectSort}
                         desc={desc}
                         changeOrder={changeOrder}
+                        
+                        language_valid={false}
                     
                     />
                 </div>

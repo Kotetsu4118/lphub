@@ -32,10 +32,6 @@ export default function CtrlEnterPlugin({blockType}){
             anchorNode.getKey() === "root"
               ? anchorNode
               : anchorNode.getTopLevelElementOrThrow();
-          console.log('element：',element);
-          console.log('selection：', selection);
-          console.log('anchorNode：', anchorNode);
-          console.log('getNextSibling：', anchorNode.getNextSibling());
           if(event.ctrlKey){
             if(element.getType() == 'code'){
                 event.preventDefault();

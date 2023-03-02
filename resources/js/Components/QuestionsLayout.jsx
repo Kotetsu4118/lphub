@@ -11,18 +11,8 @@ export default function QuestionsLayout({
     checkMode, checkAll, releaseAll, onDengerButton, showModal, closeModal, needConfirm, onSubmitDeletion, processing, deletionMessage,
     questions, languages, changeLang, checked, clickCheckBox, clickQuestion, language_id, nullMessage, noViewsMessage, isNull,
     selectSort, desc, changeOrder, needUser, isHome=false, good, later, complete, isLogin, hiddenMine, changeHiddenMine, errors,
-    confirmContents,
+    confirmContents,language_valid=true,
 }){
-    // const isTag = useRef();
-    // document.addEventListener('mouseover', function(event) {
-    //     if(event.target.name == 'tags'){
-    //         isTag.current = true;
-    //     }else{
-    //         isTag.current = false;
-    //     }
-    //     console.log(isTag.current);
-    // });
-    
     return(
         <div>
 
@@ -30,6 +20,8 @@ export default function QuestionsLayout({
                 <div>
                     <div className='flex justify-between'>
                         <div>
+                        {language_valid &&
+                        <>
                             言語：
                             <SelectLang
                                 languages={languages}
@@ -37,6 +29,8 @@ export default function QuestionsLayout({
                                 init={'all'}
                                 selected={language_id}
                             />
+                        </>
+                        }
                             { isHome && isLogin &&
                             <div onClick={()=>changeHiddenMine(hiddenMine)}>
                                 自分が作成した問題を除く：

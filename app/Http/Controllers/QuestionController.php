@@ -30,7 +30,6 @@ class QuestionController extends Controller
     // home
     public function home(Question $question, Language $languages, Tag $tags,){
         // 'status' => session('status'), いるかどうかわからん
-
         $questions = $question->withAvg('level_hasmany', 'level')->withCount('g4q_hasmany')->withCount('comment');
         
         if(Auth::user()){

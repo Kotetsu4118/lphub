@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question_level extends Model
 {
+    const UPDATED_AT = null;
+    const CREATED_AT = null;
     use HasFactory;
 }
