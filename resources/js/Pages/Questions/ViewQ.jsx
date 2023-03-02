@@ -67,17 +67,17 @@ export default function View_q(props){
                         </div>
                     </div>
                     
-                    <div class='flex pt-2'>
-                        <div>
+                    <div className='flex py-2'>
+                        <div className='text-xs'>
                             いいね数：{ comment.g4c_hasmany_count }
                         </div>
                         
                         {/*いいねする*/}
                         {/*ログインしている || ログインユーザidとコメントユーザidの不一致*/}
                         {props.auth.user != null && props.auth.user.id != comment.user_id &&(
-                            <div className='pl-3'>
+                            <div className='pl-3 text-xs'>
                                 <label>いいね：</label>
-                                <input type='checkbox' value={comment.id} defaultChecked={comment.g4c_hasmany_exists} onClick={(e)=>(changeG4C(e))}/>
+                                <input type='checkbox' className='hover:cursor-pointer' value={comment.id} defaultChecked={comment.g4c_hasmany_exists} onClick={(e)=>(changeG4C(e))}/>
                             </div>
                         )}
                         
@@ -231,7 +231,7 @@ export default function View_q(props){
                         <div className="py-2">
                             
                             <div>
-                                <div className='text-base underline'>問題：</div>
+                                <div className='text-base underline'>問題</div>
                                 {/*
                                 <div className='pt-2'>{ question.body }</div>
                                 */}
@@ -296,7 +296,7 @@ export default function View_q(props){
                         {props.auth.user != null && props.auth.user.id != question.user_id &&(
                         <div className='py-2'>
                             <label>いいね：</label>
-                            <input type='checkbox' defaultChecked={props.g4q} onClick={(e)=>(changeG4Q(e))}/>
+                            <input type='checkbox' className='hover:cursor-pointer' defaultChecked={props.g4q} onClick={(e)=>(changeG4Q(e))}/>
                         </div>
                         )}
                         
@@ -338,8 +338,6 @@ export default function View_q(props){
                 }
                 </div>
                 
-                <div onClick={()=>(console.log(data.comment.split('\n')))}>dataを見る</div>
-
                 <CommentForm
                     value={data.comment}
                     onhandleChange={onhandleChange}

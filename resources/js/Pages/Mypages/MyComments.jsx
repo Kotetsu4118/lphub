@@ -263,7 +263,7 @@ export default function MyCommnets(props){
                         
                                     <div className='py-4 px-2 flex justify-between'>
                                         <div>
-                                            <div>
+                                            <div className='w-4\/5'>
                                                 {comment.body}
                                             </div>
                                             <div className='text-xs flex py-2'>
@@ -277,10 +277,10 @@ export default function MyCommnets(props){
                                         </div>
                                         <div align='right' className='py-2 flex'>
                                             <div className='px-2'>
-                                                <NormalButton onClick={()=>toEdit(comment.id)}>編集</NormalButton>
+                                                <NormalButton className='w-16' onClick={()=>toEdit(comment.id)}>編集</NormalButton>
                                             </div>
                                             <div className='px-2'>
-                                                <NormalButton onClick={()=>toQuestion(comment.question_id)}>問題を見る</NormalButton>
+                                                <NormalButton className='w-24' onClick={()=>toQuestion(comment.question_id)}>問題を見る</NormalButton>
                                             </div>
                                         </div>
                                     </div>

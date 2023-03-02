@@ -4,11 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use DateTime;
-use App\Models\Question;
+use App\Models\Later_flag;
 
-class QuestionSeeder extends Seeder
+class Later_flagSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +14,7 @@ class QuestionSeeder extends Seeder
      * @return void
      */
     public function run()
-    {   
-        Question::factory()->count(50)->create();
+    {
+        Later_flag::factory()->count(100)->create();
     }
 }

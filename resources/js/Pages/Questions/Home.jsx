@@ -188,17 +188,17 @@ export default function Home(props) {
                 
                 <div className='flex text-sm pt-1'>
                     検索対象：
-                    <div className='px-2' onClick={()=>checkSearchTarget('title')}>
+                    <div className='px-2 hover:cursor-pointer' onClick={()=>checkSearchTarget('title')}>
                         タイトル
-                        <input type='checkbox'checked={searchTarget.has('title')}/>
+                        <input type='checkbox' className='hover:cursor-pointer' checked={searchTarget.has('title')}/>
                     </div>
-                    <div className='px-2' onClick={()=>checkSearchTarget('body')}>
+                    <div className='px-2 hover:cursor-pointer' onClick={()=>checkSearchTarget('body')}>
                         本文
-                        <input type='checkbox' checked={searchTarget.has('body')}/>
+                        <input type='checkbox' className='hover:cursor-pointer' checked={searchTarget.has('body')}/>
                     </div>
-                    <div className='px-2' onClick={()=>checkSearchTarget('answer')}>
+                    <div className='px-2 hover:cursor-pointer' onClick={()=>checkSearchTarget('answer')}>
                         答え
-                        <input type='checkbox' checked={searchTarget.has('answer')}/>
+                        <input type='checkbox' className='hover:cursor-pointer' checked={searchTarget.has('answer')}/>
                     </div>
                 </div>
                 

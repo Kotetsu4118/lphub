@@ -121,7 +121,8 @@ export default function CreateQ(props) {
             auth={props.auth}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">問題作成</h2>}
         >
-        
+            <div onClick={()=>console.log(JSON.stringify(body.current))}>jsonを見る</div>
+
             <QuestionForm
                 languages={_languages}
                 selected_lang={data.language_id}

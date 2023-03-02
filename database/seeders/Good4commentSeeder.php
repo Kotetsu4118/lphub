@@ -4,11 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use DateTime;
-use App\Models\Question;
+use App\Models\Good4comment;
 
-class QuestionSeeder extends Seeder
+class Good4commentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +14,7 @@ class QuestionSeeder extends Seeder
      * @return void
      */
     public function run()
-    {   
-        Question::factory()->count(50)->create();
+    {
+        Good4comment::factory()->count(50)->create();
     }
 }

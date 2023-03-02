@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Good4question extends Model
+class Later_flag extends Model
 {
     const UPDATED_AT = null;
-    const CREATED_AT = null;
     use HasFactory;
+    protected $table = 'later_flag';
 }
