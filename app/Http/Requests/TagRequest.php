@@ -32,12 +32,12 @@ class TagRequest extends FormRequest
     }
     
     
-    // public function messages(){
-    //     return [
-    //         'name.required' => ''
+    public function messages(){
+        return [
+            'name.required' => 'タグ名は必須です',
         
-    //     ];
-    // }
+        ];
+    }
     
     
 }

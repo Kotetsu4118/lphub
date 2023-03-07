@@ -66,8 +66,8 @@ export default function QuestionForm({
                             // autoComplete="name"
                     />
                     
-                    <InputError className="mt-2" message={errors.body} />
                     */}    
+                    <InputError className="mt-2" message={errors.body} />
                 </div>
                 
                 <div class='py-4'>
@@ -83,8 +83,8 @@ export default function QuestionForm({
                             // required
                             // autoComplete="name"
                     />
-                    <InputError className="mt-2" message={errors.answer} />
                     */}
+                    <InputError className="mt-2" message={errors.answer} />
                 </div>
                 
                 {/*タグ*/}
