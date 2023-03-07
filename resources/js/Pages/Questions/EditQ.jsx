@@ -69,7 +69,7 @@ export default function EditQ(props) {
                     name={tag.id}
                     value={tag.id}
                     checked={data.checked_tag.has(tag.id)}
-                    className="rounded border-gray-300 shadow-sm focus:ring-indigo-500"
+                    className="rounded border-gray-300 shadow-sm focus:ring-indigo-500 hover:cursor-pointer"
                 />
                 {tag.name}
             </div>
@@ -86,8 +86,13 @@ export default function EditQ(props) {
     const submit = (e) => {
         e.preventDefault();
         
-        data.body = JSON.stringify(body.current);
-        data.answer = JSON.stringify(body.current);
+        if(typeof body.current != 'undefined'){
+            data.body = JSON.stringify(body.current);
+        }
+        
+        if(typeof answer.current != 'undefined'){
+            data.answer = JSON.stringify(body.current);
+        }
         data.put_tags = Array.from(data.checked_tag);
         put(route('update_q', question.id));
     };

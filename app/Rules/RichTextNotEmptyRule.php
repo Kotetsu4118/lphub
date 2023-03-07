@@ -25,7 +25,7 @@ class RichTextNotEmptyRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match('/^"text":$/', $value);
+        return preg_match('/"text":/', $value);
     }
 
     /**
