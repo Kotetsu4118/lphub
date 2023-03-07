@@ -3,6 +3,7 @@ import Sort from '@/Components/Sort';
 import QuestionTags from '@/Components/QuestionTags';
 import { Link, } from '@inertiajs/inertia-react';
 import { useForm, } from '@inertiajs/inertia-react';
+import { useRef } from 'react';
 
 export default function QuestionsLayout({
     checkMode, checkAll, releaseAll, onDengerButton, showModal, closeModal, needConfirm, onSubmitDeletion, processing, deletionMessage,
@@ -14,8 +15,16 @@ export default function QuestionsLayout({
     const {get} = useForm();
     
     const clickQuestion = (id)=>{
-        get(route('view_q', id));
+        if(target.current != 'A'){
+            get(route('view_q', id));
+        }
     };
+    
+    const target = useRef();
+    
+    document.addEventListener("mouseover", function(event) {
+        target.current = event.target.tagName;
+    });
     
     return(
         <div>
@@ -81,7 +90,8 @@ export default function QuestionsLayout({
                                     </div>
                                     }
                                     
-                                    <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto hover:bg-gray-300 hover:cursor-pointer'
+                                    <div 
+                                    className={'bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto hover:bg-gray-300 hover:cursor-pointer'}
                                         onClick={ checkMode ? 
                                             ()=>clickCheckBox(question.id)
                                             :
@@ -89,7 +99,7 @@ export default function QuestionsLayout({
                                         }
                                     >       
                                         
-                                            <div className='pl-3'>
+                                            <div className='pl-3 relative'>
                                             
                                                 <div className='py-2 text-xl text-gray-900'>
                                                     {question.title}
@@ -98,7 +108,7 @@ export default function QuestionsLayout({
                                                 { needUser &&
                                                 <div className='py-2 flex'>
                                                     作成者：
-                                                    <img class='h-6 w-auto' src={ question.user.user_icon_path }/> 
+                                                    <img className='h-6 w-auto' src={ question.user.user_icon_path }/> 
                                                     {question.user.name}
 
                                                 </div>
@@ -106,18 +116,17 @@ export default function QuestionsLayout({
                                                 <QuestionTags
                                                     tags={question.tag}
                                                     vaild={!checkMode}
-                                                    name='tags'
                                                 />
                                                 
                                                 <div className='flex space-x-4'>
-                                                    <div className='py-2'>
+                                                    <div className='py-2 text-xs'>
                                                         いいね数：{question.g4q_hasmany_count}
                                                     </div>
                                                     
-                                                    <div className='py-2'>
+                                                    <div className='py-2 text-xs'>
                                                         コメント数：{question.comment_count}
                                                     </div>
-                                                    <div className='py-2'>
+                                                    <div className='py-2 text-xs'>
                                                     
                                                         {question.level_hasmany_avg_level ?
                                                             <div>難易度：{Math.round(question.level_hasmany_avg_level * 100) / 100}</div> :

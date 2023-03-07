@@ -46,6 +46,7 @@ class Question_tagFactory extends Factory
             $tag_id = Question_tagFactory::random_tag_id($language_id);
         }
         
+        
         return [
             'question_id'=>$question_id,
             'tag_id'=>$tag_id,
