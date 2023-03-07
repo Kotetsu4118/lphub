@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\RichTextNotEmptyRule;
+use App\Rules\RichTextMaxRule;
 
 class QuestionRequest extends FormRequest
 {
@@ -25,8 +27,8 @@ class QuestionRequest extends FormRequest
     {   
         return [
             'title' => 'required | string | max:20',
-            'body' => 'required | string',
-            'answer' => 'required | string ',
+            'body' => ['string', 'required', new RichTextNotEmptyRule, new RichTextMaxRule],
+            'answer' => ['string', 'required', new RichTextNotEmptyRule, new RichTextMaxRule],
             'language_id' => 'required',
         ];
     }

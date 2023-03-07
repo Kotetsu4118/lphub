@@ -1,18 +1,22 @@
-import QuestionIndex from '@/Components/QuestionIndex';
-import NormalButton from '@/Components/NormalButton';
-import DeleteForm from '@/Components/DeleteForm';
 import SelectLang from '@/Components/SelectLang';
 import Sort from '@/Components/Sort';
 import QuestionTags from '@/Components/QuestionTags';
 import { Link, } from '@inertiajs/inertia-react';
-import {useRef} from 'react';
+import { useForm, } from '@inertiajs/inertia-react';
 
 export default function QuestionsLayout({
     checkMode, checkAll, releaseAll, onDengerButton, showModal, closeModal, needConfirm, onSubmitDeletion, processing, deletionMessage,
-    questions, languages, changeLang, checked, clickCheckBox, clickQuestion, language_id, nullMessage, noViewsMessage, isNull,
-    selectSort, desc, changeOrder, needUser, isHome=false, good, later, complete, isLogin, hiddenMine, changeHiddenMine, errors,
-    confirmContents,language_valid=true,
+    questions, languages, changeLang, checked, clickCheckBox, language_id, nullMessage, noViewsMessage, isNull,
+    selectSort, desc, changeOrder, needUser, isHome=false, good,  isLogin, hiddenMine, changeHiddenMine,
+    confirmContents, language_valid=true,
 }){
+    
+    const {get} = useForm();
+    
+    const clickQuestion = (id)=>{
+        get(route('view_q', id));
+    };
+    
     return(
         <div>
 
@@ -21,7 +25,7 @@ export default function QuestionsLayout({
                     <div className='flex justify-between'>
                         <div>
                         {language_valid &&
-                        <>
+                        <div>
                             言語：
                             <SelectLang
                                 languages={languages}
@@ -29,7 +33,7 @@ export default function QuestionsLayout({
                                 init={'all'}
                                 selected={language_id}
                             />
-                        </>
+                        </div>
                         }
                             { isHome && isLogin &&
                             <div onClick={()=>changeHiddenMine(hiddenMine)}>
@@ -77,13 +81,13 @@ export default function QuestionsLayout({
                                     </div>
                                     }
                                     
-                                    <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto hover:bg-gray-300'
-                                        onClick={ checkMode && (
+                                    <div className='bg-white overflow-hidden shadow-sm sm:rounded-lg flex-1 w-auto hover:bg-gray-300 hover:cursor-pointer'
+                                        onClick={ checkMode ? 
                                             ()=>clickCheckBox(question.id)
-                                        )}
+                                            :
+                                            ()=>clickQuestion(question.id)
+                                        }
                                     >       
-                                        { !checkMode ?
-                                            <Link href={route('view_q', question.id)}>
                                         
                                             <div className='pl-3'>
                                             
@@ -122,48 +126,6 @@ export default function QuestionsLayout({
                                                     </div> 
                                                 </div>
                                             </div>
-                                            </Link>
-                                            
-                                            :
-                                            <div className='pl-3 hover:cursor-pointer'>
-                                            
-                                                <div className='py-2 text-xl text-gray-900'>
-                                                    {question.title}
-                                                </div>
-                                                
-                                                
-                                                { needUser &&
-                                                <div className='py-2 flex '>
-                                                    作成者：
-                                                    <img class='h-6 w-auto' src={ question.user.user_icon_path }/> 
-                                                    {question.user.name}
-
-                                                </div>
-                                                }
-                                                <QuestionTags
-                                                    tags={question.tag}
-                                                    vaild={!checkMode}
-                                                    name='tags'
-                                                />
-                                                <div className='flex space-x-4'>
-                                                    <div className='py-2'>
-                                                        いいね数：{question.g4q_hasmany_count}
-                                                    </div>
-                                                    
-                                                    <div className='py-2'>
-                                                        コメント数：{question.comment_count}
-                                                    </div>
-                                                    <div className='py-2'>
-                                                    
-                                                        {question.level_hasmany_avg_level ?
-                                                            <div>難易度：{Math.round(question.level_hasmany_avg_level * 100) / 100}</div> :
-                                                            <div>難易度：未評価</div>
-                                                        }
-                                                </div> 
-                                                </div>
-                                            </div>
-                                            
-                                            }
                                     </div>
                                 </div>
                         </div>
