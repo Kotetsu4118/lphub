@@ -1,8 +1,6 @@
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
-import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
-// import {LexicalErrorBoundary} from "@lexical/react/LexicalErrorBoundary";
 
 import Toolbar from "@/Plugins/ToolbarPlugin";
 import CtrlEnterPlugin from "@/Plugins/CtrlEnterPlugin";
@@ -17,10 +15,9 @@ import { TRANSFORMERS } from "@lexical/markdown";
 
 import ListMaxIndentLevelPlugin from "@/Plugins/ListMaxIndentLevelPlugin";
 import CodeHighlightPlugin from "@/Plugins/CodeHighlightPlugin";
-// import AutoLinkPlugin from "./plugins/AutoLinkPlugin";
 
 function Placeholder() {
-  return <div className="editor-placeholder">Enter some rich text...</div>;
+  return <div className="editor-placeholder">テキストを入力してください...</div>;
 }
 
 
@@ -45,7 +42,6 @@ export default function Editor({languages, selectedLang, editMode}) {
               <ContentEditable className="editor-input" />
             }
             placeholder={<Placeholder />}
-            // ErrorBoundary={LexicalErrorBoundary}
             
           />
           </div>
@@ -53,9 +49,6 @@ export default function Editor({languages, selectedLang, editMode}) {
           <CodeHighlightPlugin />
           <ListPlugin />
           <LinkPlugin />
-          {/*
-          <AutoLinkPlugin />
-          */}
           
           <ListMaxIndentLevelPlugin maxDepth={3} />
           

@@ -39,16 +39,16 @@ export default function UpdatePasswordForm({ className }) {
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">Update Password</h2>
+                <h2 className="text-lg font-medium text-gray-900">パスワード変更</h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Ensure your account is using a long, random password to stay secure.
+                    アカウントの安全性を保つため、長くランダムなパスワードを使用していることを確認してください。
                 </p>
             </header>
 
             <form onSubmit={updatePassword} className="mt-6 space-y-6">
                 <div>
-                    <InputLabel for="current_password" value="Current Password" />
+                    <InputLabel for="current_password" value="現在のパスワード" />
 
                     <TextInput
                         id="current_password"
@@ -64,7 +64,7 @@ export default function UpdatePasswordForm({ className }) {
                 </div>
 
                 <div>
-                    <InputLabel for="password" value="New Password" />
+                    <InputLabel for="password" value="新しいパスワード" />
 
                     <TextInput
                         id="password"
@@ -80,7 +80,7 @@ export default function UpdatePasswordForm({ className }) {
                 </div>
 
                 <div>
-                    <InputLabel for="password_confirmation" value="Confirm Password" />
+                    <InputLabel for="password_confirmation" value="新しいパスワード(確認)" />
 
                     <TextInput
                         id="password_confirmation"
@@ -95,7 +95,7 @@ export default function UpdatePasswordForm({ className }) {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton processing={processing}>Save</PrimaryButton>
+                    <PrimaryButton processing={processing}>保存</PrimaryButton>
 
                     <Transition
                         show={recentlySuccessful}

@@ -53,9 +53,6 @@ export default function View_q(props){
                             <img class='h-8 w-auto' src={ comment.user.user_icon_path }/>
                             <div className='text-lg p-1'>{comment.user.name}</div>
                         </div>
-                        <div align='right' className='px-2'>
-                            { comment.created_at }
-                        </div>
                     
                     </div>
                     
