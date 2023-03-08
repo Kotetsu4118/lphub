@@ -57,17 +57,15 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
     return (
         <section className={className}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900">Profile Information</h2>
+                <h2 className="text-lg font-medium text-gray-900">プロフィール情報</h2>
 
                 <p className="mt-1 text-sm text-gray-600">
-                    Update your account's profile information and email address.
+                    プロフィールとメールアドレスの変更ができます。
                 </p>
             </header>
             
             
-            <form onSubmit={submit} className="mt-6 space-y-6"
-                // enctype="multipart/form-data"
-            >
+            <form onSubmit={submit} className="mt-6 space-y-6">
                 <div>
                     <InputLabel for="name" value="名前" />
 
@@ -103,20 +101,20 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
                 {mustVerifyEmail && user.email_verified_at === null && (
                     <div>
                         <p className="text-sm mt-2 text-gray-800">
-                            Your email address is unverified.
+                            あなたのメールアドレスは未確認です。
                             <Link
                                 href={route('verification.send')}
                                 method="post"
                                 as="button"
                                 className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                             >
-                                Click here to re-send the verification email.
+                                認証メールの再送信はこちら。
                             </Link>
                         </p>
 
                         {status === 'verification-link-sent' && (
                             <div className="mt-2 font-medium text-sm text-green-600">
-                                A new verification link has been sent to your email address.
+                                新しい認証リンクがあなたのメールアドレスに送信されました。
                             </div>
                         )}
                     </div>
